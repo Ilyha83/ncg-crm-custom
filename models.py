@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 import datetime
-from .database import Base
+from database import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -58,7 +58,7 @@ class RealEstate(Base):
     gallery_data = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-# --- ДОБАВЛЕННЫЕ ТАБЛИЦЫ ДЛЯ ДЕЯТЕЛЬНОСТИ ---
+# --- ДЕЯТЕЛЬНОСТЬ ---
 class Email(Base):
     __tablename__ = "emails"
 
@@ -74,8 +74,8 @@ class Meeting(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    date_start = Column(String)  # ISO string or datetime
-    duration = Column(Integer, default=60) # minutes
+    date_start = Column(String)
+    duration = Column(Integer, default=60)
     contact_id = Column(Integer, ForeignKey("contacts.id"), nullable=True)
     description = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
@@ -88,7 +88,7 @@ class Call(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     date_start = Column(String)
-    duration = Column(Integer, default=15) # minutes
+    duration = Column(Integer, default=15)
     contact_id = Column(Integer, ForeignKey("contacts.id"), nullable=True)
     description = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
@@ -100,7 +100,7 @@ class Task(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    status = Column(String, default="Not Started")  # Not Started, In Progress, Completed
+    status = Column(String, default="Not Started")
     due_date = Column(String)
     description = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
