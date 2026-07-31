@@ -40,46 +40,46 @@
             </div>
             <nav class="sidebar-menu">
                 <a href="#dashboard" class="menu-item active" data-target="dashboard">
-                    <i class="fas fa-chart-line"></i> <span>Главная</span>
+                    <i class="fas fa-chart-line"></i> <span data-i18n="menu_dashboard">Главная</span>
                 </a>
                 <a href="#leads" class="menu-item" data-target="leads">
-                    <i class="fas fa-comments"></i> <span>Лиды (WhatsApp)</span>
+                    <i class="fas fa-comments"></i> <span data-i18n="menu_leads">Лиды (WhatsApp)</span>
                 </a>
                 <a href="#opportunities" class="menu-item" data-target="opportunities">
-                    <i class="fas fa-briefcase"></i> <span>Сделки</span>
+                    <i class="fas fa-briefcase"></i> <span data-i18n="menu_opps">Сделки</span>
                 </a>
                 <a href="#contacts" class="menu-item" data-target="contacts">
-                    <i class="fas fa-user-friends"></i> <span>Контакты</span>
+                    <i class="fas fa-user-friends"></i> <span data-i18n="menu_contacts">Контакты</span>
                 </a>
                 <a href="#developers" class="menu-item" data-target="developers">
-                    <i class="fas fa-city"></i> <span>Застройщики</span>
+                    <i class="fas fa-city"></i> <span data-i18n="menu_developers">Застройщики</span>
                 </a>
                 <a href="#real-estate" class="menu-item" data-target="real-estate">
-                    <i class="fas fa-building"></i> <span>Объекты</span>
+                    <i class="fas fa-building"></i> <span data-i18n="menu_estate">Объекты</span>
                 </a>
 
-                <div class="menu-divider">Деятельность</div>
+                <div class="menu-divider" data-i18n="menu_activities">Деятельность</div>
                 
                 <a href="#emails" class="menu-item" data-target="emails">
-                    <i class="fas fa-envelope"></i> <span>Эл. письма</span>
+                    <i class="fas fa-envelope"></i> <span data-i18n="menu_emails">Эл. письма</span>
                 </a>
                 <a href="#meetings" class="menu-item" data-target="meetings">
-                    <i class="fas fa-handshake"></i> <span>Встречи</span>
+                    <i class="fas fa-handshake"></i> <span data-i18n="menu_meetings">Встречи</span>
                 </a>
                 <a href="#calls" class="menu-item" data-target="calls">
-                    <i class="fas fa-phone-alt"></i> <span>Звонки</span>
+                    <i class="fas fa-phone-alt"></i> <span data-i18n="menu_calls">Звонки</span>
                 </a>
                 <a href="#tasks" class="menu-item" data-target="tasks">
-                    <i class="fas fa-tasks"></i> <span>Задачи</span>
+                    <i class="fas fa-tasks"></i> <span data-i18n="menu_tasks">Задачи</span>
                 </a>
                 <a href="#calendar" class="menu-item" data-target="calendar">
-                    <i class="fas fa-calendar-alt"></i> <span>Календарь</span>
+                    <i class="fas fa-calendar-alt"></i> <span data-i18n="menu_calendar">Календарь</span>
                 </a>
 
-                <div class="menu-divider admin-only">Администрирование</div>
+                <div class="menu-divider admin-only" data-i18n="menu_admin">Администрирование</div>
 
                 <a href="#users" class="menu-item admin-only" data-target="users">
-                    <i class="fas fa-user-shield"></i> <span>Сотрудники и роли</span>
+                    <i class="fas fa-user-shield"></i> <span data-i18n="menu_users">Сотрудники и роли</span>
                 </a>
             </nav>
             <div class="sidebar-footer">
@@ -88,6 +88,12 @@
                     <span id="user-role-badge" class="role-badge">CEO</span>
                 </div>
                 <div class="footer-buttons">
+                    <!-- Селектор языка в футере -->
+                    <select id="lang-selector" class="lang-select-dropdown" title="Выберите язык / Select language">
+                        <option value="ru">🇷🇺 RU</option>
+                        <option value="en">🇬🇧 EN</option>
+                        <option value="tr">🇹🇷 TR</option>
+                    </select>
                     <button id="btn-theme-toggle" class="btn-icon" title="Переключить тему"><i class="fas fa-sun"></i></button>
                     <button id="btn-logout" class="btn-icon" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
@@ -100,7 +106,7 @@
                 <div class="header-actions">
                     <div id="search-box" class="search-container">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="global-search" placeholder="Поиск...">
+                        <input type="text" id="global-search" placeholder="Поиск..." data-i18n-placeholder="search">
                     </div>
                 </div>
             </header>
@@ -111,29 +117,29 @@
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-comments"></i></div>
                             <div class="stat-value" id="count-leads">0</div>
-                            <div class="stat-label">Новых лидов с квиза</div>
+                            <div class="stat-label" data-i18n="stat_leads">Новых лидов с квиза</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
                             <div class="stat-value" id="count-opps">0</div>
-                            <div class="stat-label">Активных сделок</div>
+                            <div class="stat-label" data-i18n="stat_opps">Активных сделок</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-building"></i></div>
                             <div class="stat-value" id="count-estate">0</div>
-                            <div class="stat-label">Объектов в базе</div>
+                            <div class="stat-label" data-i18n="stat_estate">Объектов в базе</div>
                         </div>
                     </div>
                     <div class="dashboard-tables">
                         <div class="table-container card">
-                            <h3>Последние WhatsApp-лиды</h3>
+                            <h3 data-i18n="recent_leads">Последние WhatsApp-лиды</h3>
                             <table id="table-recent-leads">
                                 <thead>
                                     <tr>
-                                        <th>Имя</th>
-                                        <th>Телефон</th>
-                                        <th>Результаты квиза</th>
-                                        <th>Дата</th>
+                                        <th data-i18n="th_name">Имя</th>
+                                        <th data-i18n="th_phone">Телефон</th>
+                                        <th data-i18n="th_quiz">Результаты квиза</th>
+                                        <th data-i18n="th_date">Дата</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -144,17 +150,17 @@
 
                 <section id="sec-leads" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Лиды с WhatsApp-викторин</h2>
+                        <h2 data-i18n="title_leads">Лиды с WhatsApp-викторин</h2>
                     </div>
                     <div class="table-container card">
                         <table id="table-all-leads">
                             <thead>
                                 <tr>
-                                    <th>Имя</th>
-                                    <th>Телефон</th>
-                                    <th>Ответы на квиз</th>
-                                    <th>Статус</th>
-                                    <th>Дата</th>
+                                    <th data-i18n="th_name">Имя</th>
+                                    <th data-i18n="th_phone">Телефон</th>
+                                    <th data-i18n="th_quiz">Ответы на квиз</th>
+                                    <th data-i18n="th_status">Статус</th>
+                                    <th data-i18n="th_date">Дата</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -164,18 +170,18 @@
 
                 <section id="sec-opportunities" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Сделки</h2>
-                        <button class="btn btn-gold" onclick="openModal('opp')"><i class="fas fa-plus"></i> Создать сделку</button>
+                        <h2 data-i18n="title_opps">Сделки</h2>
+                        <button class="btn btn-gold" onclick="openModal('opp')"><i class="fas fa-plus"></i> <span data-i18n="btn_create_opp">Создать сделку</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-opps">
                             <thead>
                                 <tr>
-                                    <th>Название</th>
-                                    <th>Этап</th>
-                                    <th>Сумма (EUR)</th>
-                                    <th>Контакт</th>
-                                    <th>Дата создания</th>
+                                    <th data-i18n="th_title">Название</th>
+                                    <th data-i18n="th_stage">Этап</th>
+                                    <th data-i18n="th_amount">Сумма (EUR)</th>
+                                    <th data-i18n="th_contact">Контакт</th>
+                                    <th data-i18n="th_date">Дата создания</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -185,18 +191,18 @@
 
                 <section id="sec-contacts" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Контакты</h2>
-                        <button class="btn btn-gold" onclick="openModal('contact')"><i class="fas fa-plus"></i> Добавить контакт</button>
+                        <h2 data-i18n="title_contacts">Контакты</h2>
+                        <button class="btn btn-gold" onclick="openModal('contact')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_contact">Добавить контакт</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-contacts">
                             <thead>
                                 <tr>
-                                    <th>Имя Фамилия</th>
-                                    <th>Телефон</th>
+                                    <th data-i18n="th_full_name">Имя Фамилия</th>
+                                    <th data-i18n="th_phone">Телефон</th>
                                     <th>Email</th>
-                                    <th>Описание</th>
-                                    <th>Дата создания</th>
+                                    <th data-i18n="th_desc">Описание</th>
+                                    <th data-i18n="th_date">Дата создания</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -204,21 +210,20 @@
                     </div>
                 </section>
 
-                <!-- ЗАСТРОЙЩИКИ (DEVELOPERS) -->
                 <section id="sec-developers" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Застройщики (Контрагенты)</h2>
-                        <button class="btn btn-gold" onclick="openModal('developer')"><i class="fas fa-plus"></i> Добавить застройщика</button>
+                        <h2 data-i18n="title_developers">Застройщики (Контрагенты)</h2>
+                        <button class="btn btn-gold" onclick="openModal('developer')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_dev">Добавить застройщика</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-developers">
                             <thead>
                                 <tr>
-                                    <th>Название компании</th>
-                                    <th>Телефон</th>
+                                    <th data-i18n="th_company">Название компании</th>
+                                    <th data-i18n="th_phone">Телефон</th>
                                     <th>Email</th>
-                                    <th>Веб-сайт</th>
-                                    <th>Описание</th>
+                                    <th data-i18n="th_website">Веб-сайт</th>
+                                    <th data-i18n="th_desc">Описание</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -226,20 +231,19 @@
                     </div>
                 </section>
 
-                <!-- СОТРУДНИКИ И РОЛИ (USERS & ROLES) -->
                 <section id="sec-users" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Сотрудники и права доступа</h2>
-                        <button class="btn btn-gold" onclick="openModal('user')"><i class="fas fa-plus"></i> Добавить сотрудника</button>
+                        <h2 data-i18n="title_users">Сотрудники и права доступа</h2>
+                        <button class="btn btn-gold" onclick="openModal('user')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_user">Добавить сотрудника</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-users">
                             <thead>
                                 <tr>
-                                    <th>Логин</th>
-                                    <th>Роль в системе</th>
-                                    <th>Права доступа</th>
-                                    <th>Дата регистрации</th>
+                                    <th data-i18n="th_username">Логин</th>
+                                    <th data-i18n="th_role">Роль в системе</th>
+                                    <th data-i18n="th_permissions">Права доступа</th>
+                                    <th data-i18n="th_date">Дата регистрации</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -250,22 +254,22 @@
                 <section id="sec-real-estate" class="tab-section hidden">
                     <div class="real-estate-layout">
                         <aside class="estate-sidebar card">
-                            <h3>Подразделы</h3>
+                            <h3 data-i18n="subsections">Подразделы</h3>
                             <ul class="estate-categories">
-                                <li class="cat-item active" data-cat="all">Все объекты</li>
-                                <li class="cat-item" data-cat="studio">Студия</li>
+                                <li class="cat-item active" data-cat="all" data-i18n="cat_all">Все объекты</li>
+                                <li class="cat-item" data-cat="studio" data-i18n="cat_studio">Студия</li>
                                 <li class="cat-item" data-cat="1_1">1+1</li>
                                 <li class="cat-item" data-cat="2_1">2+1</li>
                                 <li class="cat-item" data-cat="3_1">3+1</li>
                                 <li class="cat-item" data-cat="4_1">4+1</li>
-                                <li class="cat-item" data-cat="townhouse">Таунхаус</li>
-                                <li class="cat-item" data-cat="villa">Вилла</li>
+                                <li class="cat-item" data-cat="townhouse" data-i18n="cat_townhouse">Таунхаус</li>
+                                <li class="cat-item" data-cat="villa" data-i18n="cat_villa">Вилла</li>
                             </ul>
                         </aside>
                         <div class="estate-main">
                             <div class="section-actions">
-                                <h2 id="estate-title">Все объекты недвижимости</h2>
-                                <button class="btn btn-gold" onclick="openModal('estate')"><i class="fas fa-plus"></i> Создать объект</button>
+                                <h2 id="estate-title" data-i18n="all_estate">Все объекты недвижимости</h2>
+                                <button class="btn btn-gold" onclick="openModal('estate')"><i class="fas fa-plus"></i> <span data-i18n="btn_create_estate">Создать объект</span></button>
                             </div>
                             <div class="estate-grid" id="estate-cards-container"></div>
                         </div>
@@ -274,18 +278,18 @@
 
                 <section id="sec-emails" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Электронные письма</h2>
-                        <button class="btn btn-gold" onclick="openModal('email')"><i class="fas fa-plus"></i> Отправить письмо</button>
+                        <h2 data-i18n="title_emails">Электронные письма</h2>
+                        <button class="btn btn-gold" onclick="openModal('email')"><i class="fas fa-plus"></i> <span data-i18n="btn_send_email">Отправить письмо</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-emails">
                             <thead>
                                 <tr>
-                                    <th>Тема</th>
-                                    <th>От кого</th>
-                                    <th>Кому</th>
-                                    <th>Текст письма</th>
-                                    <th>Дата</th>
+                                    <th data-i18n="th_subject">Тема</th>
+                                    <th data-i18n="th_from">От кого</th>
+                                    <th data-i18n="th_to">Кому</th>
+                                    <th data-i18n="th_text">Текст письма</th>
+                                    <th data-i18n="th_date">Дата</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -295,18 +299,18 @@
 
                 <section id="sec-meetings" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Встречи</h2>
-                        <button class="btn btn-gold" onclick="openModal('meeting')"><i class="fas fa-plus"></i> Запланировать встречу</button>
+                        <h2 data-i18n="title_meetings">Встречи</h2>
+                        <button class="btn btn-gold" onclick="openModal('meeting')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_meeting">Запланировать встречу</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-meetings">
                             <thead>
                                 <tr>
-                                    <th>Тема встречи</th>
-                                    <th>Дата и время</th>
-                                    <th>Длительность</th>
-                                    <th>Клиент</th>
-                                    <th>Описание</th>
+                                    <th data-i18n="th_meet_title">Тема встречи</th>
+                                    <th data-i18n="th_datetime">Дата и время</th>
+                                    <th data-i18n="th_duration">Длительность</th>
+                                    <th data-i18n="th_client">Клиент</th>
+                                    <th data-i18n="th_desc">Описание</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -316,18 +320,18 @@
 
                 <section id="sec-calls" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Звонки</h2>
-                        <button class="btn btn-gold" onclick="openModal('call')"><i class="fas fa-plus"></i> Запланировать звонок</button>
+                        <h2 data-i18n="title_calls">Звонки</h2>
+                        <button class="btn btn-gold" onclick="openModal('call')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_call">Запланировать звонок</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-calls">
                             <thead>
                                 <tr>
-                                    <th>Тема звонка</th>
-                                    <th>Дата и время</th>
-                                    <th>Длительность</th>
-                                    <th>Клиент</th>
-                                    <th>Описание</th>
+                                    <th data-i18n="th_call_title">Тема звонка</th>
+                                    <th data-i18n="th_datetime">Дата и время</th>
+                                    <th data-i18n="th_duration">Длительность</th>
+                                    <th data-i18n="th_client">Клиент</th>
+                                    <th data-i18n="th_desc">Описание</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -337,17 +341,17 @@
 
                 <section id="sec-tasks" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Задачи</h2>
-                        <button class="btn btn-gold" onclick="openModal('task')"><i class="fas fa-plus"></i> Добавить задачу</button>
+                        <h2 data-i18n="title_tasks">Задачи</h2>
+                        <button class="btn btn-gold" onclick="openModal('task')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_task">Добавить задачу</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-tasks">
                             <thead>
                                 <tr>
-                                    <th>Название задачи</th>
-                                    <th>Срок выполнения</th>
-                                    <th>Описание</th>
-                                    <th>Статус</th>
+                                    <th data-i18n="th_task_title">Название задачи</th>
+                                    <th data-i18n="th_due">Срок выполнения</th>
+                                    <th data-i18n="th_desc">Описание</th>
+                                    <th data-i18n="th_status">Статус</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -357,14 +361,14 @@
 
                 <section id="sec-calendar" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2>Календарь событий</h2>
+                        <h2 data-i18n="title_calendar">Календарь событий</h2>
                         <div class="calendar-header-actions">
                             <span id="calendar-month-name" class="gold-text" style="font-size: 18px; font-weight: 600;">Июль 2026</span>
                         </div>
                     </div>
                     <div class="calendar-layout card">
                         <div class="calendar-grid-header">
-                            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+                            <div data-i18n="day_mon">Пн</div><div data-i18n="day_tue">Вт</div><div data-i18n="day_wed">Ср</div><div data-i18n="day_thu">Чт</div><div data-i18n="day_fri">Пт</div><div data-i18n="day_sat">Сб</div><div data-i18n="day_sun">Вс</div>
                         </div>
                         <div class="calendar-grid-days" id="calendar-days-container"></div>
                     </div>
@@ -373,299 +377,125 @@
         </main>
     </div>
 
-    <!-- МОДАЛКИ СОЗДАНИЯ -->
-
-    <!-- Модалка Застройщика -->
+    <!-- МОДАЛКИ (БЕЗ ИЗМЕНЕНИЙ) -->
     <div id="modal-developer" class="modal hidden">
         <div class="modal-content card">
-            <h3>Добавить застройщика (Контрагента)</h3>
+            <h3>Добавить застройщика</h3>
             <form id="form-developer">
-                <div class="input-group">
-                    <label for="dev-name">Название компании</label>
-                    <input type="text" id="dev-name" required placeholder="Например: Carrington Group">
-                </div>
-                <div class="input-group">
-                    <label for="dev-phone">Телефон</label>
-                    <input type="text" id="dev-phone">
-                </div>
-                <div class="input-group">
-                    <label for="dev-email">Email</label>
-                    <input type="email" id="dev-email">
-                </div>
-                <div class="input-group">
-                    <label for="dev-web">Веб-сайт</label>
-                    <input type="text" id="dev-web" placeholder="https://...">
-                </div>
-                <div class="input-group">
-                    <label for="dev-desc">Описание</label>
-                    <textarea id="dev-desc" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('developer')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Сохранить</button>
-                </div>
+                <div class="input-group"><label>Название</label><input type="text" id="dev-name" required></div>
+                <div class="input-group"><label>Телефон</label><input type="text" id="dev-phone"></div>
+                <div class="input-group"><label>Email</label><input type="email" id="dev-email"></div>
+                <div class="input-group"><label>Сайт</label><input type="text" id="dev-web"></div>
+                <div class="input-group"><label>Описание</label><textarea id="dev-desc" rows="3"></textarea></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('developer')">Отмена</button><button type="submit" class="btn btn-gold">Сохранить</button></div>
             </form>
         </div>
     </div>
 
-    <!-- Модалка Сотрудника (Роли) -->
     <div id="modal-user" class="modal hidden">
         <div class="modal-content card">
             <h3>Добавить сотрудника</h3>
             <form id="form-user">
-                <div class="input-group">
-                    <label for="usr-name">Логин пользователя</label>
-                    <input type="text" id="usr-name" required>
-                </div>
-                <div class="input-group">
-                    <label for="usr-pass">Пароль</label>
-                    <input type="password" id="usr-pass" required>
-                </div>
-                <div class="input-group">
-                    <label for="usr-role">Роль и права доступа</label>
-                    <select id="usr-role">
-                        <option value="CEO">CEO / Директор (Полный доступ)</option>
-                        <option value="manager">Менеджер по продажам</option>
-                        <option value="marketing">Маркетинг</option>
-                        <option value="legal">Юридический отдел</option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('user')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Создать аккаунт</button>
-                </div>
+                <div class="input-group"><label>Логин</label><input type="text" id="usr-name" required></div>
+                <div class="input-group"><label>Пароль</label><input type="password" id="usr-pass" required></div>
+                <div class="input-group"><label>Роль</label><select id="usr-role"><option value="CEO">CEO</option><option value="manager">Менеджер</option><option value="marketing">Маркетинг</option><option value="legal">Юрист</option></select></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('user')">Отмена</button><button type="submit" class="btn btn-gold">Создать</button></div>
             </form>
         </div>
     </div>
 
-    <!-- Модалки остальных объектов без изменений -->
     <div id="modal-email" class="modal hidden">
         <div class="modal-content card">
-            <h3>Создать новое письмо</h3>
+            <h3>Отправить письмо</h3>
             <form id="form-email">
-                <div class="input-group">
-                    <label for="em-to">Кому (Email)</label>
-                    <input type="email" id="em-to" required>
-                </div>
-                <div class="input-group">
-                    <label for="em-subject">Тема письма</label>
-                    <input type="text" id="em-subject" required>
-                </div>
-                <div class="input-group">
-                    <label for="em-body">Содержимое письма</label>
-                    <textarea id="em-body" rows="5" required></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('email')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Отправить</button>
-                </div>
+                <div class="input-group"><label>Кому</label><input type="email" id="em-to" required></div>
+                <div class="input-group"><label>Тема</label><input type="text" id="em-subject" required></div>
+                <div class="input-group"><label>Текст</label><textarea id="em-body" rows="5" required></textarea></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('email')">Отмена</button><button type="submit" class="btn btn-gold">Отправить</button></div>
             </form>
         </div>
     </div>
 
     <div id="modal-meeting" class="modal hidden">
         <div class="modal-content card">
-            <h3>Запланировать встречу</h3>
+            <h3>Встреча</h3>
             <form id="form-meeting">
-                <div class="input-group">
-                    <label for="meet-name">Тема встречи</label>
-                    <input type="text" id="meet-name" required>
-                </div>
-                <div class="input-group">
-                    <label for="meet-start">Дата и время начала</label>
-                    <input type="datetime-local" id="meet-start" required>
-                </div>
-                <div class="input-group">
-                    <label for="meet-duration">Длительность (минут)</label>
-                    <input type="number" id="meet-duration" value="60">
-                </div>
-                <div class="input-group">
-                    <label for="meet-contact">Связать с контактом</label>
-                    <select id="meet-contact"></select>
-                </div>
-                <div class="input-group">
-                    <label for="meet-desc">Описание</label>
-                    <textarea id="meet-desc" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('meeting')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Запланировать</button>
-                </div>
+                <div class="input-group"><label>Тема</label><input type="text" id="meet-name" required></div>
+                <div class="input-group"><label>Дата</label><input type="datetime-local" id="meet-start" required></div>
+                <div class="input-group"><label>Длительность</label><input type="number" id="meet-duration" value="60"></div>
+                <div class="input-group"><label>Контакт</label><select id="meet-contact"></select></div>
+                <div class="input-group"><label>Описание</label><textarea id="meet-desc" rows="3"></textarea></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('meeting')">Отмена</button><button type="submit" class="btn btn-gold">Сохранить</button></div>
             </form>
         </div>
     </div>
 
     <div id="modal-call" class="modal hidden">
         <div class="modal-content card">
-            <h3>Запланировать звонок</h3>
+            <h3>Звонок</h3>
             <form id="form-call">
-                <div class="input-group">
-                    <label for="call-name">Тема звонка</label>
-                    <input type="text" id="call-name" required>
-                </div>
-                <div class="input-group">
-                    <label for="call-start">Дата и время</label>
-                    <input type="datetime-local" id="call-start" required>
-                </div>
-                <div class="input-group">
-                    <label for="call-duration">Длительность (минут)</label>
-                    <input type="number" id="call-duration" value="15">
-                </div>
-                <div class="input-group">
-                    <label for="call-contact">Связать с контактом</label>
-                    <select id="call-contact"></select>
-                </div>
-                <div class="input-group">
-                    <label for="call-desc">Описание</label>
-                    <textarea id="call-desc" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('call')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Запланировать</button>
-                </div>
+                <div class="input-group"><label>Тема</label><input type="text" id="call-name" required></div>
+                <div class="input-group"><label>Дата</label><input type="datetime-local" id="call-start" required></div>
+                <div class="input-group"><label>Длительность</label><input type="number" id="call-duration" value="15"></div>
+                <div class="input-group"><label>Контакт</label><select id="call-contact"></select></div>
+                <div class="input-group"><label>Описание</label><textarea id="call-desc" rows="3"></textarea></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('call')">Отмена</button><button type="submit" class="btn btn-gold">Сохранить</button></div>
             </form>
         </div>
     </div>
 
     <div id="modal-task" class="modal hidden">
         <div class="modal-content card">
-            <h3>Добавить новую задачу</h3>
+            <h3>Задача</h3>
             <form id="form-task">
-                <div class="input-group">
-                    <label for="task-name">Название задачи</label>
-                    <input type="text" id="task-name" required>
-                </div>
-                <div class="input-group">
-                    <label for="task-due">Срок выполнения (Due Date)</label>
-                    <input type="date" id="task-due" required>
-                </div>
-                <div class="input-group">
-                    <label for="task-desc">Описание</label>
-                    <textarea id="task-desc" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('task')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Создать</button>
-                </div>
+                <div class="input-group"><label>Название</label><input type="text" id="task-name" required></div>
+                <div class="input-group"><label>Срок</label><input type="date" id="task-due" required></div>
+                <div class="input-group"><label>Описание</label><textarea id="task-desc" rows="3"></textarea></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('task')">Отмена</button><button type="submit" class="btn btn-gold">Создать</button></div>
             </form>
         </div>
     </div>
 
     <div id="modal-opp" class="modal hidden">
         <div class="modal-content card">
-            <h3>Создать новую сделку</h3>
+            <h3>Сделка</h3>
             <form id="form-opp">
-                <div class="input-group">
-                    <label for="opp-name">Название сделки</label>
-                    <input type="text" id="opp-name" required>
-                </div>
-                <div class="input-group">
-                    <label for="opp-stage">Этап</label>
-                    <select id="opp-stage">
-                        <option value="Prospecting">Квалификация</option>
-                        <option value="Proposal">Предложение</option>
-                        <option value="Negotiation">Переговоры</option>
-                        <option value="Closed Won">Успешно закрыто</option>
-                        <option value="Closed Lost">Закрыто / Упущено</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="opp-amount">Сумма (EUR)</label>
-                    <input type="number" id="opp-amount" value="0">
-                </div>
-                <div class="input-group">
-                    <label for="opp-contact">Связать с контактом</label>
-                    <select id="opp-contact"></select>
-                </div>
-                <div class="input-group">
-                    <label for="opp-desc">Описание</label>
-                    <textarea id="opp-desc" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('opp')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Создать</button>
-                </div>
+                <div class="input-group"><label>Название</label><input type="text" id="opp-name" required></div>
+                <div class="input-group"><label>Этап</label><select id="opp-stage"><option value="Prospecting">Квалификация</option><option value="Proposal">Предложение</option><option value="Negotiation">Переговоры</option><option value="Closed Won">Успешно</option><option value="Closed Lost">Упущено</option></select></div>
+                <div class="input-group"><label>Сумма</label><input type="number" id="opp-amount" value="0"></div>
+                <div class="input-group"><label>Контакт</label><select id="opp-contact"></select></div>
+                <div class="input-group"><label>Описание</label><textarea id="opp-desc" rows="3"></textarea></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('opp')">Отмена</button><button type="submit" class="btn btn-gold">Создать</button></div>
             </form>
         </div>
     </div>
 
     <div id="modal-contact" class="modal hidden">
         <div class="modal-content card">
-            <h3>Добавить новый контакт</h3>
+            <h3>Контакт</h3>
             <form id="form-contact">
-                <div class="input-group">
-                    <label for="con-first-name">Имя</label>
-                    <input type="text" id="con-first-name" required>
-                </div>
-                <div class="input-group">
-                    <label for="con-last-name">Фамилия</label>
-                    <input type="text" id="con-last-name">
-                </div>
-                <div class="input-group">
-                    <label for="con-phone">Телефон</label>
-                    <input type="text" id="con-phone">
-                </div>
-                <div class="input-group">
-                    <label for="con-email">Email</label>
-                    <input type="email" id="con-email">
-                </div>
-                <div class="input-group">
-                    <label for="con-desc">Описание</label>
-                    <textarea id="con-desc" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('contact')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Добавить</button>
-                </div>
+                <div class="input-group"><label>Имя</label><input type="text" id="con-first-name" required></div>
+                <div class="input-group"><label>Фамилия</label><input type="text" id="con-last-name"></div>
+                <div class="input-group"><label>Телефон</label><input type="text" id="con-phone"></div>
+                <div class="input-group"><label>Email</label><input type="email" id="con-email"></div>
+                <div class="input-group"><label>Описание</label><textarea id="con-desc" rows="3"></textarea></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('contact')">Отмена</button><button type="submit" class="btn btn-gold">Добавить</button></div>
             </form>
         </div>
     </div>
 
     <div id="modal-estate" class="modal hidden">
         <div class="modal-content card">
-            <h3>Создать карточку объекта</h3>
+            <h3>Создать объект</h3>
             <form id="form-estate">
-                <div class="input-group">
-                    <label for="est-name">Название объекта</label>
-                    <input type="text" id="est-name" required>
-                </div>
-                <div class="input-group">
-                    <label for="est-category">Подраздел (Тип)</label>
-                    <select id="est-category">
-                        <option value="studio">Студия</option>
-                        <option value="1_1">1+1</option>
-                        <option value="2_1">2+1</option>
-                        <option value="3_1">3+1</option>
-                        <option value="4_1">4+1</option>
-                        <option value="townhouse">Таунхаус</option>
-                        <option value="villa">Вилла</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="est-developer">Застройщик (Контрагент)</label>
-                    <select id="est-developer"></select>
-                </div>
-                <div class="input-group">
-                    <label for="est-price">Цена (EUR)</label>
-                    <input type="number" id="est-price" required>
-                </div>
-                <div class="input-group">
-                    <label for="est-tags">Теги / Особенности</label>
-                    <input type="text" id="est-tags" placeholder="beach, pool, sea_view">
-                </div>
-                <div class="input-group">
-                    <label for="est-desc">Описание</label>
-                    <textarea id="est-desc" rows="3"></textarea>
-                </div>
-                <div class="input-group">
-                    <label>Фотогалерея</label>
-                    <input type="file" id="est-images" multiple accept="image/*" class="file-input">
-                    <div id="upload-preview" class="upload-preview-grid"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('estate')">Отмена</button>
-                    <button type="submit" class="btn btn-gold">Создать карточку</button>
-                </div>
+                <div class="input-group"><label>Название</label><input type="text" id="est-name" required></div>
+                <div class="input-group"><label>Тип</label><select id="est-category"><option value="studio">Студия</option><option value="1_1">1+1</option><option value="2_1">2+1</option><option value="3_1">3+1</option><option value="4_1">4+1</option><option value="townhouse">Таунхаус</option><option value="villa">Вилла</option></select></div>
+                <div class="input-group"><label>Застройщик</label><select id="est-developer"></select></div>
+                <div class="input-group"><label>Цена (EUR)</label><input type="number" id="est-price" required></div>
+                <div class="input-group"><label>Теги</label><input type="text" id="est-tags" placeholder="beach, pool"></div>
+                <div class="input-group"><label>Описание</label><textarea id="est-desc" rows="3"></textarea></div>
+                <div class="input-group"><label>Галерея</label><input type="file" id="est-images" multiple accept="image/*" class="file-input"><div id="upload-preview" class="upload-preview-grid"></div></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('estate')">Отмена</button><button type="submit" class="btn btn-gold">Создать</button></div>
             </form>
         </div>
     </div>

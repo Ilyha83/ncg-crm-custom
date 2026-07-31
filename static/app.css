@@ -2,7 +2,6 @@
    NCG Consulting CRM Premium Theme CSS Stylesheet (Themeable)
    ------------------------------------------------------------- */
 
-/* Переменные для ТЕМНОЙ темы */
 .theme-dark {
     --bg-dark: #0f111a;
     --bg-card: #161925;
@@ -12,7 +11,6 @@
     --accent-bg: rgba(255, 255, 255, 0.02);
 }
 
-/* Переменные для СВЕТЛОЙ темы (NCG Light Gold) */
 .theme-light {
     --bg-dark: #f0f2f5;
     --bg-card: #ffffff;
@@ -54,9 +52,35 @@ body {
     display: none !important;
 }
 
-/* -------------------------------------------------------------
-   LOGIN PAGE WRAPPER
-   ------------------------------------------------------------- */
+/* ДРОПДАУН ВЫБОРА ЯЗЫКА В ФУТЕРЕ */
+.lang-select-dropdown {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lang-select-dropdown:hover {
+    border-color: var(--gold);
+}
+
+.role-badge {
+    font-size: 11px;
+    background-color: var(--gold-glow);
+    color: var(--gold);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* LOGIN PAGE */
 .login-wrapper {
     display: flex;
     justify-content: center;
@@ -93,7 +117,6 @@ body {
     margin-bottom: 25px;
 }
 
-/* FORMS & INPUTS */
 .input-group {
     margin-bottom: 20px;
     text-align: left;
@@ -134,7 +157,6 @@ body {
     margin-top: 15px;
 }
 
-/* BUTTONS */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -187,16 +209,12 @@ body {
     color: var(--gold);
 }
 
-/* -------------------------------------------------------------
-   MAIN INTERFACE LAYOUT
-   ------------------------------------------------------------- */
 .app-layout {
     display: flex;
     height: 100vh;
     width: 100vw;
 }
 
-/* SIDEBAR */
 .sidebar {
     width: 260px;
     background-color: var(--bg-card);
@@ -267,10 +285,10 @@ body {
 
 .footer-buttons {
     display: flex;
-    gap: 15px;
+    align-items: center;
+    gap: 10px;
 }
 
-/* MAIN CONTENT */
 .main-content {
     flex: 1;
     display: flex;
@@ -319,7 +337,6 @@ body {
     font-size: 13px;
 }
 
-/* CONTENT CONTAINER */
 .content-container {
     flex: 1;
     padding: 30px;
@@ -328,7 +345,6 @@ body {
     transition: background-color 0.3s ease;
 }
 
-/* CARDS */
 .card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -337,7 +353,6 @@ body {
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* TABLES */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -362,7 +377,6 @@ table tr:hover td {
     background-color: var(--accent-bg);
 }
 
-/* STATS CARDS */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -402,7 +416,6 @@ table tr:hover td {
     text-transform: uppercase;
 }
 
-/* REAL ESTATE SPECIFICS */
 .real-estate-layout {
     display: flex;
     gap: 30px;
@@ -505,24 +518,6 @@ table tr:hover td {
     line-height: 1.4;
 }
 
-.estate-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.tag-badge {
-    font-size: 11px;
-    background-color: var(--bg-dark);
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-    padding: 3px 8px;
-    border-radius: 4px;
-}
-
-/* -------------------------------------------------------------
-   ИНТЕРАКТИВНЫЙ КАЛЕНДАРЬ
-   ------------------------------------------------------------- */
 .calendar-layout {
     display: flex;
     flex-direction: column;
@@ -591,7 +586,6 @@ table tr:hover td {
     border-left: 2px solid var(--accent-green);
 }
 
-/* MODALS */
 .modal {
     position: fixed;
     top: 0;
