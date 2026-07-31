@@ -8,9 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="app.css">
 </head>
-<body class="theme-dark"> <!-- По умолчанию темная тема -->
+<body class="theme-dark">
 
-    <!-- ОКНО ВХОДА (LOGIN) -->
     <div id="login-container" class="login-wrapper">
         <div class="login-box">
             <div class="login-logo">
@@ -33,9 +32,7 @@
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ ИНТЕРФЕЙС (CRM) -->
     <div id="app-container" class="app-layout hidden">
-        <!-- БОКОВАЯ ПАНЕЛЬ -->
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <i class="fas fa-gem gold-text"></i>
@@ -53,6 +50,9 @@
                 </a>
                 <a href="#contacts" class="menu-item" data-target="contacts">
                     <i class="fas fa-user-friends"></i> <span>Контакты</span>
+                </a>
+                <a href="#developers" class="menu-item" data-target="developers">
+                    <i class="fas fa-city"></i> <span>Застройщики</span>
                 </a>
                 <a href="#real-estate" class="menu-item" data-target="real-estate">
                     <i class="fas fa-building"></i> <span>Объекты</span>
@@ -75,9 +75,18 @@
                 <a href="#calendar" class="menu-item" data-target="calendar">
                     <i class="fas fa-calendar-alt"></i> <span>Календарь</span>
                 </a>
+
+                <div class="menu-divider admin-only">Администрирование</div>
+
+                <a href="#users" class="menu-item admin-only" data-target="users">
+                    <i class="fas fa-user-shield"></i> <span>Сотрудники и роли</span>
+                </a>
             </nav>
             <div class="sidebar-footer">
-                <span id="user-info"><i class="fas fa-user-circle"></i> admin</span>
+                <div style="display: flex; flex-direction: column;">
+                    <span id="user-info"><i class="fas fa-user-circle"></i> admin</span>
+                    <span id="user-role-badge" class="role-badge">CEO</span>
+                </div>
                 <div class="footer-buttons">
                     <button id="btn-theme-toggle" class="btn-icon" title="Переключить тему"><i class="fas fa-sun"></i></button>
                     <button id="btn-logout" class="btn-icon" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
@@ -85,7 +94,6 @@
             </div>
         </aside>
 
-        <!-- ГЛАВНАЯ ОБЛАСТЬ -->
         <main class="main-content">
             <header class="main-header">
                 <h1 id="page-title">Панель управления</h1>
@@ -97,9 +105,7 @@
                 </div>
             </header>
 
-            <!-- КОНТЕЙНЕР РАЗДЕЛОВ -->
             <div id="content-area" class="content-container">
-                <!-- ГЛАВНАЯ (DASHBOARD) -->
                 <section id="sec-dashboard" class="tab-section">
                     <div class="stats-grid">
                         <div class="stat-card">
@@ -136,7 +142,6 @@
                     </div>
                 </section>
 
-                <!-- ЛИДЫ (LEADS) -->
                 <section id="sec-leads" class="tab-section hidden">
                     <div class="section-actions">
                         <h2>Лиды с WhatsApp-викторин</h2>
@@ -157,7 +162,6 @@
                     </div>
                 </section>
 
-                <!-- СДЕЛКИ (OPPORTUNITIES) -->
                 <section id="sec-opportunities" class="tab-section hidden">
                     <div class="section-actions">
                         <h2>Сделки</h2>
@@ -179,7 +183,6 @@
                     </div>
                 </section>
 
-                <!-- КОНТАКТЫ (CONTACTS) -->
                 <section id="sec-contacts" class="tab-section hidden">
                     <div class="section-actions">
                         <h2>Контакты</h2>
@@ -201,7 +204,49 @@
                     </div>
                 </section>
 
-                <!-- ОБЪЕКТЫ (REAL ESTATE) -->
+                <!-- ЗАСТРОЙЩИКИ (DEVELOPERS) -->
+                <section id="sec-developers" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Застройщики (Контрагенты)</h2>
+                        <button class="btn btn-gold" onclick="openModal('developer')"><i class="fas fa-plus"></i> Добавить застройщика</button>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-developers">
+                            <thead>
+                                <tr>
+                                    <th>Название компании</th>
+                                    <th>Телефон</th>
+                                    <th>Email</th>
+                                    <th>Веб-сайт</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- СОТРУДНИКИ И РОЛИ (USERS & ROLES) -->
+                <section id="sec-users" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Сотрудники и права доступа</h2>
+                        <button class="btn btn-gold" onclick="openModal('user')"><i class="fas fa-plus"></i> Добавить сотрудника</button>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-users">
+                            <thead>
+                                <tr>
+                                    <th>Логин</th>
+                                    <th>Роль в системе</th>
+                                    <th>Права доступа</th>
+                                    <th>Дата регистрации</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
                 <section id="sec-real-estate" class="tab-section hidden">
                     <div class="real-estate-layout">
                         <aside class="estate-sidebar card">
@@ -227,7 +272,6 @@
                     </div>
                 </section>
 
-                <!-- ЭЛ. ПИСЬМА (EMAILS) -->
                 <section id="sec-emails" class="tab-section hidden">
                     <div class="section-actions">
                         <h2>Электронные письма</h2>
@@ -249,7 +293,6 @@
                     </div>
                 </section>
 
-                <!-- ВСТРЕЧИ (MEETINGS) -->
                 <section id="sec-meetings" class="tab-section hidden">
                     <div class="section-actions">
                         <h2>Встречи</h2>
@@ -271,7 +314,6 @@
                     </div>
                 </section>
 
-                <!-- ЗВОНКИ (CALLS) -->
                 <section id="sec-calls" class="tab-section hidden">
                     <div class="section-actions">
                         <h2>Звонки</h2>
@@ -293,7 +335,6 @@
                     </div>
                 </section>
 
-                <!-- ЗАДАЧИ (TASKS) -->
                 <section id="sec-tasks" class="tab-section hidden">
                     <div class="section-actions">
                         <h2>Задачи</h2>
@@ -314,7 +355,6 @@
                     </div>
                 </section>
 
-                <!-- КАЛЕНДАРЬ (CALENDAR) -->
                 <section id="sec-calendar" class="tab-section hidden">
                     <div class="section-actions">
                         <h2>Календарь событий</h2>
@@ -333,9 +373,72 @@
         </main>
     </div>
 
-    <!-- МОДАЛЬНЫЕ ОКНА СОЗДАНИЯ -->
+    <!-- МОДАЛКИ СОЗДАНИЯ -->
 
-    <!-- Письмо -->
+    <!-- Модалка Застройщика -->
+    <div id="modal-developer" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Добавить застройщика (Контрагента)</h3>
+            <form id="form-developer">
+                <div class="input-group">
+                    <label for="dev-name">Название компании</label>
+                    <input type="text" id="dev-name" required placeholder="Например: Carrington Group">
+                </div>
+                <div class="input-group">
+                    <label for="dev-phone">Телефон</label>
+                    <input type="text" id="dev-phone">
+                </div>
+                <div class="input-group">
+                    <label for="dev-email">Email</label>
+                    <input type="email" id="dev-email">
+                </div>
+                <div class="input-group">
+                    <label for="dev-web">Веб-сайт</label>
+                    <input type="text" id="dev-web" placeholder="https://...">
+                </div>
+                <div class="input-group">
+                    <label for="dev-desc">Описание</label>
+                    <textarea id="dev-desc" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('developer')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модалка Сотрудника (Роли) -->
+    <div id="modal-user" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Добавить сотрудника</h3>
+            <form id="form-user">
+                <div class="input-group">
+                    <label for="usr-name">Логин пользователя</label>
+                    <input type="text" id="usr-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="usr-pass">Пароль</label>
+                    <input type="password" id="usr-pass" required>
+                </div>
+                <div class="input-group">
+                    <label for="usr-role">Роль и права доступа</label>
+                    <select id="usr-role">
+                        <option value="CEO">CEO / Директор (Полный доступ)</option>
+                        <option value="manager">Менеджер по продажам</option>
+                        <option value="marketing">Маркетинг</option>
+                        <option value="legal">Юридический отдел</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('user')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Создать аккаунт</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модалки остальных объектов без изменений -->
     <div id="modal-email" class="modal hidden">
         <div class="modal-content card">
             <h3>Создать новое письмо</h3>
@@ -360,14 +463,13 @@
         </div>
     </div>
 
-    <!-- Встреча -->
     <div id="modal-meeting" class="modal hidden">
         <div class="modal-content card">
             <h3>Запланировать встречу</h3>
             <form id="form-meeting">
                 <div class="input-group">
                     <label for="meet-name">Тема встречи</label>
-                    <input type="text" id="meet-name" required placeholder="Например: Обсуждение договора">
+                    <input type="text" id="meet-name" required>
                 </div>
                 <div class="input-group">
                     <label for="meet-start">Дата и время начала</label>
@@ -393,14 +495,13 @@
         </div>
     </div>
 
-    <!-- Звонок -->
     <div id="modal-call" class="modal hidden">
         <div class="modal-content card">
             <h3>Запланировать звонок</h3>
             <form id="form-call">
                 <div class="input-group">
                     <label for="call-name">Тема звонка</label>
-                    <input type="text" id="call-name" required placeholder="Например: Уточнение деталей">
+                    <input type="text" id="call-name" required>
                 </div>
                 <div class="input-group">
                     <label for="call-start">Дата и время</label>
@@ -426,14 +527,13 @@
         </div>
     </div>
 
-    <!-- Задача -->
     <div id="modal-task" class="modal hidden">
         <div class="modal-content card">
             <h3>Добавить новую задачу</h3>
             <form id="form-task">
                 <div class="input-group">
                     <label for="task-name">Название задачи</label>
-                    <input type="text" id="task-name" required placeholder="Например: Подготовить КП">
+                    <input type="text" id="task-name" required>
                 </div>
                 <div class="input-group">
                     <label for="task-due">Срок выполнения (Due Date)</label>
@@ -451,7 +551,6 @@
         </div>
     </div>
 
-    <!-- Модалки Сделок, Контактов, Объектов и Галерей переиспользуются без изменений -->
     <div id="modal-opp" class="modal hidden">
         <div class="modal-content card">
             <h3>Создать новую сделку</h3>
@@ -541,6 +640,10 @@
                         <option value="townhouse">Таунхаус</option>
                         <option value="villa">Вилла</option>
                     </select>
+                </div>
+                <div class="input-group">
+                    <label for="est-developer">Застройщик (Контрагент)</label>
+                    <select id="est-developer"></select>
                 </div>
                 <div class="input-group">
                     <label for="est-price">Цена (EUR)</label>

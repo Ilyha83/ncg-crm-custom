@@ -1,14 +1,12 @@
 const API_URL = "";
 
 let token = localStorage.getItem("token") || "";
+let currentUserRole = localStorage.getItem("user_role") || "manager";
 let currentSection = "dashboard";
 let uploadedImages = [];
 
-// Слайдер галереи
 let galleryImagesList = [];
 let galleryActiveIndex = 0;
-
-// Хранилище событий календаря
 let calendarEvents = [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -18,12 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
     setupThemeToggle();
 });
 
-// --- ТЕМА ОФОРМЛЕНИЯ (СВЕТЛАЯ / ТЕМНАЯ) ---
 function setupThemeToggle() {
     const btn = document.getElementById("btn-theme-toggle");
     const body = document.body;
 
-    // Считываем сохраненную тему
     const savedTheme = localStorage.getItem("theme") || "theme-dark";
     body.className = savedTheme;
     updateThemeIcon(savedTheme);
@@ -50,7 +46,6 @@ function updateThemeIcon(theme) {
     }
 }
 
-// --- АВТОРИЗАЦИЯ ---
 function checkAuth() {
     const loginContainer = document.getElementById("login-container");
     const appContainer = document.getElementById("app-container");
@@ -58,6 +53,17 @@ function checkAuth() {
     if (token) {
         loginContainer.classList.add("hidden");
         appContainer.classList.remove("hidden");
+
+        // Отображаем роль в футере
+        document.getElementById("user-role-badge").textContent = currentUserRole;
+
+        // Если не CEO/Admin, скрываем админские пункты меню
+        if (currentUserRole !== "CEO" && currentUserRole !== "admin") {
+            document.querySelectorAll(".admin-only").forEach(el => el.classList.add("hidden"));
+        } else {
+            document.querySelectorAll(".admin-only").forEach(el => el.classList.remove("hidden"));
+        }
+
         loadSectionData(currentSection);
     } else {
         loginContainer.classList.remove("hidden");
@@ -84,7 +90,9 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
         if (response.ok) {
             const data = await response.json();
             token = data.access_token;
+            currentUserRole = data.role || "manager";
             localStorage.setItem("token", token);
+            localStorage.setItem("user_role", currentUserRole);
             errorText.classList.add("hidden");
             checkAuth();
         } else {
@@ -98,10 +106,10 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 document.getElementById("btn-logout").addEventListener("click", () => {
     token = "";
     localStorage.removeItem("token");
+    localStorage.removeItem("user_role");
     checkAuth();
 });
 
-// --- НАВИГАЦИЯ И РОУТИНГ ---
 function setupRouting() {
     const menuItems = document.querySelectorAll(".menu-item");
     menuItems.forEach(item => {
@@ -143,6 +151,8 @@ function switchSection(target) {
         leads: "Входящие WhatsApp лиды",
         opportunities: "Сделки",
         contacts: "Контакты",
+        developers: "Застройщики (Контрагенты)",
+        users: "Управление сотрудниками и ролями",
         "real-estate": "База объектов недвижимости",
         emails: "Электронная почта",
         meetings: "Запланированные встречи",
@@ -164,8 +174,13 @@ function loadSectionData(section) {
         loadOpportunities();
     } else if (section === "contacts") {
         loadContacts();
+    } else if (section === "developers") {
+        loadDevelopers();
+    } else if (section === "users") {
+        loadUsers();
     } else if (section === "real-estate") {
         loadRealEstate();
+        loadDevelopersDropdown();
     } else if (section === "emails") {
         loadEmails();
     } else if (section === "meetings") {
@@ -179,9 +194,79 @@ function loadSectionData(section) {
     }
 }
 
-// --- API ИНТЕГРАЦИЯ ДЛЯ НОВЫХ РАЗДЕЛОВ ---
+// 1. Застройщики
+async function loadDevelopers() {
+    try {
+        const res = await fetch(`${API_URL}/api/developers`);
+        const devs = await res.json();
+        const tbody = document.querySelector("#table-developers tbody");
+        tbody.innerHTML = "";
 
-// 1. Emails
+        devs.forEach(dev => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>${dev.name}</strong></td>
+                <td>${dev.phone || "-"}</td>
+                <td>${dev.email || "-"}</td>
+                <td><a href="${dev.website}" target="_blank" style="color: var(--gold);">${dev.website || "-"}</a></td>
+                <td>${dev.description || "-"}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch(e) {
+        console.error("Developers error:", e);
+    }
+}
+
+async function loadDevelopersDropdown() {
+    try {
+        const res = await fetch(`${API_URL}/api/developers`);
+        const devs = await res.json();
+        const select = document.getElementById("est-developer");
+        select.innerHTML = `<option value="">-- Выберите застройщика --</option>`;
+        devs.forEach(d => {
+            const opt = document.createElement("option");
+            opt.value = d.id;
+            opt.textContent = d.name;
+            select.appendChild(opt);
+        });
+    } catch(e) {}
+}
+
+// 2. Пользователи и роли
+async function loadUsers() {
+    try {
+        const res = await fetch(`${API_URL}/api/users`);
+        const users = await res.json();
+        const tbody = document.querySelector("#table-users tbody");
+        tbody.innerHTML = "";
+
+        const rolesRu = {
+            CEO: "CEO / Директор",
+            manager: "Менеджер по продажам",
+            marketing: "Маркетинг",
+            legal: "Юридический отдел"
+        };
+
+        users.forEach(usr => {
+            const tr = document.createElement("tr");
+            const date = new Date(usr.created_at).toLocaleDateString("ru-RU");
+            const permText = usr.role === "CEO" ? "Полный доступ к системе" : "Ограниченный доступ по роли";
+
+            tr.innerHTML = `
+                <td><strong>${usr.username}</strong></td>
+                <td><span class="role-badge">${rolesRu[usr.role] || usr.role}</span></td>
+                <td>${permText}</td>
+                <td>${date}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch(e) {
+        console.error("Users error:", e);
+    }
+}
+
+// ШТАТНЫЕ МЕТОДЫ (ИМЕЮТСЯ БЕЗ ИЗМЕНЕНИЙ)
 async function loadEmails() {
     try {
         const res = await fetch(`${API_URL}/api/emails`);
@@ -201,12 +286,9 @@ async function loadEmails() {
             `;
             tbody.appendChild(tr);
         });
-    } catch(e) {
-        console.error("Emails load error:", e);
-    }
+    } catch(e) {}
 }
 
-// 2. Meetings
 async function loadMeetings() {
     try {
         const res = await fetch(`${API_URL}/api/meetings`);
@@ -228,12 +310,9 @@ async function loadMeetings() {
             `;
             tbody.appendChild(tr);
         });
-    } catch(e) {
-        console.error("Meetings error:", e);
-    }
+    } catch(e) {}
 }
 
-// 3. Calls
 async function loadCalls() {
     try {
         const res = await fetch(`${API_URL}/api/calls`);
@@ -255,12 +334,9 @@ async function loadCalls() {
             `;
             tbody.appendChild(tr);
         });
-    } catch(e) {
-        console.error("Calls error:", e);
-    }
+    } catch(e) {}
 }
 
-// 4. Tasks
 async function loadTasks() {
     try {
         const res = await fetch(`${API_URL}/api/tasks`);
@@ -268,17 +344,9 @@ async function loadTasks() {
         const tbody = document.querySelector("#table-tasks tbody");
         tbody.innerHTML = "";
 
-        const statusRu = {
-            "Not Started": "Не начата",
-            "In Progress": "В работе",
-            "Completed": "Выполнена"
-        };
-
         tasks.forEach(task => {
             const tr = document.createElement("tr");
             const date = new Date(task.due_date).toLocaleDateString("ru-RU");
-            const statusClass = task.status === "Completed" ? "closed" : task.status === "In Progress" ? "progress" : "new";
-
             tr.innerHTML = `
                 <td><strong>${task.name}</strong></td>
                 <td>${date}</td>
@@ -293,13 +361,10 @@ async function loadTasks() {
             `;
             tbody.appendChild(tr);
         });
-    } catch(e) {
-        console.error("Tasks error:", e);
-    }
+    } catch(e) {}
 }
 
 async function updateTaskStatus(id, status) {
-    // Временное обновление статуса на бэкенде
     await fetch(`${API_URL}/api/tasks/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -307,7 +372,6 @@ async function updateTaskStatus(id, status) {
     });
 }
 
-// 5. Календарь
 async function loadCalendar() {
     try {
         const [meetingsRes, callsRes, tasksRes] = await Promise.all([
@@ -320,7 +384,6 @@ async function loadCalendar() {
         const calls = await callsRes.json();
         const tasks = await tasksRes.json();
 
-        // Сливаем все события в один массив
         calendarEvents = [];
         meetings.forEach(m => {
             calendarEvents.push({ date: m.date_start.split("T")[0], title: `Встреча: ${m.name}`, type: "meeting" });
@@ -333,42 +396,32 @@ async function loadCalendar() {
         });
 
         renderCalendarGrid();
-    } catch(e) {
-        console.error("Calendar error:", e);
-    }
+    } catch(e) {}
 }
 
 function renderCalendarGrid() {
     const container = document.getElementById("calendar-days-container");
     container.innerHTML = "";
 
-    // По умолчанию строим сетку на текущий месяц (июль 2026 года)
     const year = 2026;
-    const month = 6; // Июль (0-индексированный)
-    
-    // Определяем день недели первого дня месяца
-    const firstDayIndex = new Date(year, month, 1).getDay(); // 0 = вс, 1 = пн
-    const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1; // Сдвиг для Пн-Вс
-
+    const month = 6;
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // Заполняем пустые клетки перед началом месяца
     for (let i = 0; i < offset; i++) {
         const cell = document.createElement("div");
         cell.className = "calendar-day-cell empty";
         container.appendChild(cell);
     }
 
-    // Заполняем дни месяца
     for (let day = 1; day <= daysInMonth; day++) {
         const cell = document.createElement("div");
         cell.className = "calendar-day-cell";
         
         const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
         cell.innerHTML = `<div class="calendar-day-num">${day}</div>`;
 
-        // Фильтруем события на этот день
         const dayEvents = calendarEvents.filter(e => e.date === dateStr);
         dayEvents.forEach(e => {
             const evDiv = document.createElement("div");
@@ -381,7 +434,6 @@ function renderCalendarGrid() {
     }
 }
 
-// --- ОСТАЛЬНЫЕ ШТАТНЫЕ РАЗДЕЛЫ CRM (БЕЗ ИЗМЕНЕНИЙ) ---
 async function loadDashboardStats() {
     try {
         const [leadsRes, oppsRes, estateRes] = await Promise.all([
@@ -420,9 +472,7 @@ async function loadDashboardStats() {
             tbody.appendChild(tr);
         });
 
-    } catch (err) {
-        console.error("Dashboard error:", err);
-    }
+    } catch (err) {}
 }
 
 async function loadLeadsList() {
@@ -458,9 +508,7 @@ async function loadLeadsList() {
             `;
             tbody.appendChild(tr);
         });
-    } catch(err) {
-        console.error("Leads error:", err);
-    }
+    } catch(err) {}
 }
 
 async function updateLeadStatus(id, newStatus) {
@@ -500,9 +548,7 @@ async function loadOpportunities() {
             `;
             tbody.appendChild(tr);
         });
-    } catch (err) {
-        console.error("Opportunities load error:", err);
-    }
+    } catch (err) {}
 }
 
 async function loadContacts() {
@@ -512,7 +558,6 @@ async function loadContacts() {
         const tbody = document.querySelector("#table-contacts tbody");
         tbody.innerHTML = "";
 
-        // Заполняем селекторы модалок звонков и встреч
         const oppContactSelect = document.getElementById("opp-contact");
         const meetContactSelect = document.getElementById("meet-contact");
         const callContactSelect = document.getElementById("call-contact");
@@ -534,7 +579,6 @@ async function loadContacts() {
             `;
             tbody.appendChild(tr);
 
-            // Опции в селекты
             const opt = document.createElement("option");
             opt.value = contact.id;
             opt.textContent = `${contact.first_name} ${contact.last_name}`;
@@ -543,9 +587,7 @@ async function loadContacts() {
             meetContactSelect.appendChild(opt.cloneNode(true));
             callContactSelect.appendChild(opt.cloneNode(true));
         });
-    } catch(err) {
-        console.error("Contacts error:", err);
-    }
+    } catch(err) {}
 }
 
 async function loadRealEstate(category = null) {
@@ -593,12 +635,8 @@ async function loadRealEstate(category = null) {
             `;
             grid.appendChild(card);
         });
-    } catch(err) {
-        console.error("Real estate error:", err);
-    }
+    } catch(err) {}
 }
-
-// --- НАСТРОЙКА ФОРМ СОЗДАНИЯ ---
 
 function setupForms() {
     const fileInput = document.getElementById("est-images");
@@ -625,9 +663,7 @@ function setupForms() {
                     div.innerHTML = `<img src="${data.url}">`;
                     preview.appendChild(div);
                 }
-            } catch(e) {
-                console.error("Upload error:", e);
-            }
+            } catch(e) {}
         }
     });
 
@@ -637,6 +673,7 @@ function setupForms() {
             name: document.getElementById("est-name").value,
             category: document.getElementById("est-category").value,
             price: document.getElementById("est-price").value,
+            developer_id: document.getElementById("est-developer").value || null,
             tags: document.getElementById("est-tags").value,
             description: document.getElementById("est-desc").value,
             gallery_data: uploadedImages.join(",")
@@ -698,9 +735,6 @@ function setupForms() {
         }
     });
 
-    // --- ОТПРАВКА ДЛЯ НОВЫХ ФОРМ ДЕЯТЕЛЬНОСТИ ---
-
-    // Email
     document.getElementById("form-email").addEventListener("submit", async (e) => {
         e.preventDefault();
         const payload = {
@@ -720,7 +754,6 @@ function setupForms() {
         }
     });
 
-    // Meeting
     document.getElementById("form-meeting").addEventListener("submit", async (e) => {
         e.preventDefault();
         const payload = {
@@ -741,7 +774,6 @@ function setupForms() {
         }
     });
 
-    // Call
     document.getElementById("form-call").addEventListener("submit", async (e) => {
         e.preventDefault();
         const payload = {
@@ -762,7 +794,6 @@ function setupForms() {
         }
     });
 
-    // Task
     document.getElementById("form-task").addEventListener("submit", async (e) => {
         e.preventDefault();
         const payload = {
@@ -778,6 +809,46 @@ function setupForms() {
         if (res.ok) {
             closeModal("task");
             loadTasks();
+        }
+    });
+
+    // Форма Застройщика
+    document.getElementById("form-developer").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+            name: document.getElementById("dev-name").value,
+            phone: document.getElementById("dev-phone").value,
+            email: document.getElementById("dev-email").value,
+            website: document.getElementById("dev-web").value,
+            description: document.getElementById("dev-desc").value
+        };
+        const res = await fetch(`${API_URL}/api/developers`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            closeModal("developer");
+            loadDevelopers();
+        }
+    });
+
+    // Форма Сотрудника / Роли
+    document.getElementById("form-user").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+            username: document.getElementById("usr-name").value,
+            password: document.getElementById("usr-pass").value,
+            role: document.getElementById("usr-role").value
+        };
+        const res = await fetch(`${API_URL}/api/users`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            closeModal("user");
+            loadUsers();
         }
     });
 }

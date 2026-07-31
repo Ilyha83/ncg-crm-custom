@@ -9,7 +9,21 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    is_admin = Column(Integer, default=1)
+    role = Column(String, default="manager") # CEO, manager, admin, legal, marketing
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+class Developer(Base):
+    __tablename__ = "developers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    phone = Column(String, nullable=True)
+    email = Column(String, nullable=True)
+    website = Column(String, nullable=True)
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    real_estate = relationship("RealEstate", back_populates="developer")
 
 class Lead(Base):
     __tablename__ = "leads"
@@ -53,12 +67,14 @@ class RealEstate(Base):
     category = Column(String, index=True)
     price = Column(Float, default=0.0)
     currency = Column(String, default="EUR")
+    developer_id = Column(Integer, ForeignKey("developers.id"), nullable=True)
     tags = Column(String, nullable=True)
     description = Column(Text, nullable=True)
     gallery_data = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-# --- ДЕЯТЕЛЬНОСТЬ ---
+    developer = relationship("Developer", back_populates="real_estate")
+
 class Email(Base):
     __tablename__ = "emails"
 

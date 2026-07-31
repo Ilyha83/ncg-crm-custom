@@ -10,12 +10,10 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-# Исправленные импорты без точек для запуска uvicorn на серверах
 import database
 import models
 from database import engine, get_db, Base
 
-# Создаем таблицы при запуске
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="NCG Consulting CRM API")
@@ -52,7 +50,8 @@ db = next(get_db())
 if not db.query(models.User).filter_by(username="admin").first():
     admin_user = models.User(
         username="admin",
-        hashed_password=hash_password("admin_secure_password_99")
+        hashed_password=hash_password("admin_secure_password_99"),
+        role="CEO"
     )
     db.add(admin_user)
     db.commit()
@@ -66,8 +65,46 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(data={"sub": user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(data={"sub": user.username, "role": user.role})
+    return {"access_token": access_token, "token_type": "bearer", "role": user.role}
+
+# --- ПОЛЬЗОВАТЕЛИ И РОЛИ ---
+@app.get("/api/users")
+def get_users(db: Session = Depends(get_db)):
+    return db.query(models.User).all()
+
+@app.post("/api/users")
+def create_user(data: dict, db: Session = Depends(get_db)):
+    if db.query(models.User).filter_by(username=data.get("username")).first():
+        raise HTTPException(status_code=400, detail="Username exists")
+    new_user = models.User(
+        username=data.get("username"),
+        hashed_password=hash_password(data.get("password", "123456")),
+        role=data.get("role", "manager")
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+# --- ЗАСТРОЙЩИКИ (DEVELOPERS / КОНТРАГЕНТЫ) ---
+@app.get("/api/developers")
+def get_developers(db: Session = Depends(get_db)):
+    return db.query(models.Developer).order_by(models.Developer.created_at.desc()).all()
+
+@app.post("/api/developers")
+def create_developer(data: dict, db: Session = Depends(get_db)):
+    new_dev = models.Developer(
+        name=data.get("name"),
+        phone=data.get("phone", ""),
+        email=data.get("email", ""),
+        website=data.get("website", ""),
+        description=data.get("description", "")
+    )
+    db.add(new_dev)
+    db.commit()
+    db.refresh(new_dev)
+    return new_dev
 
 # --- ЛИДЫ ---
 @app.get("/api/leads")
@@ -112,6 +149,7 @@ def create_real_estate(data: dict, db: Session = Depends(get_db)):
         category=data.get("category", "studio"),
         price=float(data.get("price", 0)),
         currency=data.get("currency", "EUR"),
+        developer_id=data.get("developer_id"),
         tags=data.get("tags", ""),
         description=data.get("description", ""),
         gallery_data=data.get("gallery_data", "")
