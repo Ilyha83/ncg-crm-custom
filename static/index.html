@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCG Consulting - CRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body class="theme-dark"> <!-- По умолчанию темная тема -->
+
+    <!-- ОКНО ВХОДА (LOGIN) -->
+    <div id="login-container" class="login-wrapper">
+        <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-gem gold-text"></i>
+                <span class="brand-text">NCG <span class="gold-text">Consulting</span></span>
+            </div>
+            <h2>Вход в систему</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Имя пользователя</label>
+                    <input type="text" id="username" required placeholder="Введите логин">
+                </div>
+                <div class="input-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" required placeholder="Введите пароль">
+                </div>
+                <button type="submit" class="btn btn-gold btn-block">Войти</button>
+                <p id="login-error" class="error-text hidden">Неверный логин или пароль</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС (CRM) -->
+    <div id="app-container" class="app-layout hidden">
+        <!-- БОКОВАЯ ПАНЕЛЬ -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-gem gold-text"></i>
+                <span class="brand-name">NCG <span class="gold-text">Consulting</span></span>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#dashboard" class="menu-item active" data-target="dashboard">
+                    <i class="fas fa-chart-line"></i> <span>Главная</span>
+                </a>
+                <a href="#leads" class="menu-item" data-target="leads">
+                    <i class="fas fa-comments"></i> <span>Лиды (WhatsApp)</span>
+                </a>
+                <a href="#opportunities" class="menu-item" data-target="opportunities">
+                    <i class="fas fa-briefcase"></i> <span>Сделки</span>
+                </a>
+                <a href="#contacts" class="menu-item" data-target="contacts">
+                    <i class="fas fa-user-friends"></i> <span>Контакты</span>
+                </a>
+                <a href="#real-estate" class="menu-item" data-target="real-estate">
+                    <i class="fas fa-building"></i> <span>Объекты</span>
+                </a>
+
+                <div class="menu-divider">Деятельность</div>
+                
+                <a href="#emails" class="menu-item" data-target="emails">
+                    <i class="fas fa-envelope"></i> <span>Эл. письма</span>
+                </a>
+                <a href="#meetings" class="menu-item" data-target="meetings">
+                    <i class="fas fa-handshake"></i> <span>Встречи</span>
+                </a>
+                <a href="#calls" class="menu-item" data-target="calls">
+                    <i class="fas fa-phone-alt"></i> <span>Звонки</span>
+                </a>
+                <a href="#tasks" class="menu-item" data-target="tasks">
+                    <i class="fas fa-tasks"></i> <span>Задачи</span>
+                </a>
+                <a href="#calendar" class="menu-item" data-target="calendar">
+                    <i class="fas fa-calendar-alt"></i> <span>Календарь</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <span id="user-info"><i class="fas fa-user-circle"></i> admin</span>
+                <div class="footer-buttons">
+                    <button id="btn-theme-toggle" class="btn-icon" title="Переключить тему"><i class="fas fa-sun"></i></button>
+                    <button id="btn-logout" class="btn-icon" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ГЛАВНАЯ ОБЛАСТЬ -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1 id="page-title">Панель управления</h1>
+                <div class="header-actions">
+                    <div id="search-box" class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="global-search" placeholder="Поиск...">
+                    </div>
+                </div>
+            </header>
+
+            <!-- КОНТЕЙНЕР РАЗДЕЛОВ -->
+            <div id="content-area" class="content-container">
+                <!-- ГЛАВНАЯ (DASHBOARD) -->
+                <section id="sec-dashboard" class="tab-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-comments"></i></div>
+                            <div class="stat-value" id="count-leads">0</div>
+                            <div class="stat-label">Новых лидов с квиза</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                            <div class="stat-value" id="count-opps">0</div>
+                            <div class="stat-label">Активных сделок</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-building"></i></div>
+                            <div class="stat-value" id="count-estate">0</div>
+                            <div class="stat-label">Объектов в базе</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-tables">
+                        <div class="table-container card">
+                            <h3>Последние WhatsApp-лиды</h3>
+                            <table id="table-recent-leads">
+                                <thead>
+                                    <tr>
+                                        <th>Имя</th>
+                                        <th>Телефон</th>
+                                        <th>Результаты квиза</th>
+                                        <th>Дата</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ЛИДЫ (LEADS) -->
+                <section id="sec-leads" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Лиды с WhatsApp-викторин</h2>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-all-leads">
+                            <thead>
+                                <tr>
+                                    <th>Имя</th>
+                                    <th>Телефон</th>
+                                    <th>Ответы на квиз</th>
+                                    <th>Статус</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- СДЕЛКИ (OPPORTUNITIES) -->
+                <section id="sec-opportunities" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Сделки</h2>
+                        <button class="btn btn-gold" onclick="openModal('opp')"><i class="fas fa-plus"></i> Создать сделку</button>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-opps">
+                            <thead>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Этап</th>
+                                    <th>Сумма (EUR)</th>
+                                    <th>Контакт</th>
+                                    <th>Дата создания</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- КОНТАКТЫ (CONTACTS) -->
+                <section id="sec-contacts" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Контакты</h2>
+                        <button class="btn btn-gold" onclick="openModal('contact')"><i class="fas fa-plus"></i> Добавить контакт</button>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-contacts">
+                            <thead>
+                                <tr>
+                                    <th>Имя Фамилия</th>
+                                    <th>Телефон</th>
+                                    <th>Email</th>
+                                    <th>Описание</th>
+                                    <th>Дата создания</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ОБЪЕКТЫ (REAL ESTATE) -->
+                <section id="sec-real-estate" class="tab-section hidden">
+                    <div class="real-estate-layout">
+                        <aside class="estate-sidebar card">
+                            <h3>Подразделы</h3>
+                            <ul class="estate-categories">
+                                <li class="cat-item active" data-cat="all">Все объекты</li>
+                                <li class="cat-item" data-cat="studio">Студия</li>
+                                <li class="cat-item" data-cat="1_1">1+1</li>
+                                <li class="cat-item" data-cat="2_1">2+1</li>
+                                <li class="cat-item" data-cat="3_1">3+1</li>
+                                <li class="cat-item" data-cat="4_1">4+1</li>
+                                <li class="cat-item" data-cat="townhouse">Таунхаус</li>
+                                <li class="cat-item" data-cat="villa">Вилла</li>
+                            </ul>
+                        </aside>
+                        <div class="estate-main">
+                            <div class="section-actions">
+                                <h2 id="estate-title">Все объекты недвижимости</h2>
+                                <button class="btn btn-gold" onclick="openModal('estate')"><i class="fas fa-plus"></i> Создать объект</button>
+                            </div>
+                            <div class="estate-grid" id="estate-cards-container"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ЭЛ. ПИСЬМА (EMAILS) -->
+                <section id="sec-emails" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Электронные письма</h2>
+                        <button class="btn btn-gold" onclick="openModal('email')"><i class="fas fa-plus"></i> Отправить письмо</button>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-emails">
+                            <thead>
+                                <tr>
+                                    <th>Тема</th>
+                                    <th>От кого</th>
+                                    <th>Кому</th>
+                                    <th>Текст письма</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ВСТРЕЧИ (MEETINGS) -->
+                <section id="sec-meetings" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Встречи</h2>
+                        <button class="btn btn-gold" onclick="openModal('meeting')"><i class="fas fa-plus"></i> Запланировать встречу</button>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-meetings">
+                            <thead>
+                                <tr>
+                                    <th>Тема встречи</th>
+                                    <th>Дата и время</th>
+                                    <th>Длительность</th>
+                                    <th>Клиент</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ЗВОНКИ (CALLS) -->
+                <section id="sec-calls" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Звонки</h2>
+                        <button class="btn btn-gold" onclick="openModal('call')"><i class="fas fa-plus"></i> Запланировать звонок</button>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-calls">
+                            <thead>
+                                <tr>
+                                    <th>Тема звонка</th>
+                                    <th>Дата и время</th>
+                                    <th>Длительность</th>
+                                    <th>Клиент</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ЗАДАЧИ (TASKS) -->
+                <section id="sec-tasks" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Задачи</h2>
+                        <button class="btn btn-gold" onclick="openModal('task')"><i class="fas fa-plus"></i> Добавить задачу</button>
+                    </div>
+                    <div class="table-container card">
+                        <table id="table-tasks">
+                            <thead>
+                                <tr>
+                                    <th>Название задачи</th>
+                                    <th>Срок выполнения</th>
+                                    <th>Описание</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- КАЛЕНДАРЬ (CALENDAR) -->
+                <section id="sec-calendar" class="tab-section hidden">
+                    <div class="section-actions">
+                        <h2>Календарь событий</h2>
+                        <div class="calendar-header-actions">
+                            <span id="calendar-month-name" class="gold-text" style="font-size: 18px; font-weight: 600;">Июль 2026</span>
+                        </div>
+                    </div>
+                    <div class="calendar-layout card">
+                        <div class="calendar-grid-header">
+                            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+                        </div>
+                        <div class="calendar-grid-days" id="calendar-days-container"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- МОДАЛЬНЫЕ ОКНА СОЗДАНИЯ -->
+
+    <!-- Письмо -->
+    <div id="modal-email" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Создать новое письмо</h3>
+            <form id="form-email">
+                <div class="input-group">
+                    <label for="em-to">Кому (Email)</label>
+                    <input type="email" id="em-to" required>
+                </div>
+                <div class="input-group">
+                    <label for="em-subject">Тема письма</label>
+                    <input type="text" id="em-subject" required>
+                </div>
+                <div class="input-group">
+                    <label for="em-body">Содержимое письма</label>
+                    <textarea id="em-body" rows="5" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('email')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Встреча -->
+    <div id="modal-meeting" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Запланировать встречу</h3>
+            <form id="form-meeting">
+                <div class="input-group">
+                    <label for="meet-name">Тема встречи</label>
+                    <input type="text" id="meet-name" required placeholder="Например: Обсуждение договора">
+                </div>
+                <div class="input-group">
+                    <label for="meet-start">Дата и время начала</label>
+                    <input type="datetime-local" id="meet-start" required>
+                </div>
+                <div class="input-group">
+                    <label for="meet-duration">Длительность (минут)</label>
+                    <input type="number" id="meet-duration" value="60">
+                </div>
+                <div class="input-group">
+                    <label for="meet-contact">Связать с контактом</label>
+                    <select id="meet-contact"></select>
+                </div>
+                <div class="input-group">
+                    <label for="meet-desc">Описание</label>
+                    <textarea id="meet-desc" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('meeting')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Запланировать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Звонок -->
+    <div id="modal-call" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Запланировать звонок</h3>
+            <form id="form-call">
+                <div class="input-group">
+                    <label for="call-name">Тема звонка</label>
+                    <input type="text" id="call-name" required placeholder="Например: Уточнение деталей">
+                </div>
+                <div class="input-group">
+                    <label for="call-start">Дата и время</label>
+                    <input type="datetime-local" id="call-start" required>
+                </div>
+                <div class="input-group">
+                    <label for="call-duration">Длительность (минут)</label>
+                    <input type="number" id="call-duration" value="15">
+                </div>
+                <div class="input-group">
+                    <label for="call-contact">Связать с контактом</label>
+                    <select id="call-contact"></select>
+                </div>
+                <div class="input-group">
+                    <label for="call-desc">Описание</label>
+                    <textarea id="call-desc" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('call')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Запланировать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Задача -->
+    <div id="modal-task" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Добавить новую задачу</h3>
+            <form id="form-task">
+                <div class="input-group">
+                    <label for="task-name">Название задачи</label>
+                    <input type="text" id="task-name" required placeholder="Например: Подготовить КП">
+                </div>
+                <div class="input-group">
+                    <label for="task-due">Срок выполнения (Due Date)</label>
+                    <input type="date" id="task-due" required>
+                </div>
+                <div class="input-group">
+                    <label for="task-desc">Описание</label>
+                    <textarea id="task-desc" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('task')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модалки Сделок, Контактов, Объектов и Галерей переиспользуются без изменений -->
+    <div id="modal-opp" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Создать новую сделку</h3>
+            <form id="form-opp">
+                <div class="input-group">
+                    <label for="opp-name">Название сделки</label>
+                    <input type="text" id="opp-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="opp-stage">Этап</label>
+                    <select id="opp-stage">
+                        <option value="Prospecting">Квалификация</option>
+                        <option value="Proposal">Предложение</option>
+                        <option value="Negotiation">Переговоры</option>
+                        <option value="Closed Won">Успешно закрыто</option>
+                        <option value="Closed Lost">Закрыто / Упущено</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="opp-amount">Сумма (EUR)</label>
+                    <input type="number" id="opp-amount" value="0">
+                </div>
+                <div class="input-group">
+                    <label for="opp-contact">Связать с контактом</label>
+                    <select id="opp-contact"></select>
+                </div>
+                <div class="input-group">
+                    <label for="opp-desc">Описание</label>
+                    <textarea id="opp-desc" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('opp')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-contact" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Добавить новый контакт</h3>
+            <form id="form-contact">
+                <div class="input-group">
+                    <label for="con-first-name">Имя</label>
+                    <input type="text" id="con-first-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="con-last-name">Фамилия</label>
+                    <input type="text" id="con-last-name">
+                </div>
+                <div class="input-group">
+                    <label for="con-phone">Телефон</label>
+                    <input type="text" id="con-phone">
+                </div>
+                <div class="input-group">
+                    <label for="con-email">Email</label>
+                    <input type="email" id="con-email">
+                </div>
+                <div class="input-group">
+                    <label for="con-desc">Описание</label>
+                    <textarea id="con-desc" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('contact')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-estate" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Создать карточку объекта</h3>
+            <form id="form-estate">
+                <div class="input-group">
+                    <label for="est-name">Название объекта</label>
+                    <input type="text" id="est-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="est-category">Подраздел (Тип)</label>
+                    <select id="est-category">
+                        <option value="studio">Студия</option>
+                        <option value="1_1">1+1</option>
+                        <option value="2_1">2+1</option>
+                        <option value="3_1">3+1</option>
+                        <option value="4_1">4+1</option>
+                        <option value="townhouse">Таунхаус</option>
+                        <option value="villa">Вилла</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="est-price">Цена (EUR)</label>
+                    <input type="number" id="est-price" required>
+                </div>
+                <div class="input-group">
+                    <label for="est-tags">Теги / Особенности</label>
+                    <input type="text" id="est-tags" placeholder="beach, pool, sea_view">
+                </div>
+                <div class="input-group">
+                    <label for="est-desc">Описание</label>
+                    <textarea id="est-desc" rows="3"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Фотогалерея</label>
+                    <input type="file" id="est-images" multiple accept="image/*" class="file-input">
+                    <div id="upload-preview" class="upload-preview-grid"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('estate')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Создать карточку</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-gallery" class="modal hidden" onclick="closeGalleryModal()">
+        <div class="gallery-modal-content" onclick="event.stopPropagation()">
+            <span class="gallery-close" onclick="closeGalleryModal()">&times;</span>
+            <img id="gallery-active-img" src="" alt="Active Slide">
+            <div class="gallery-nav">
+                <button class="gallery-btn" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+                <button class="gallery-btn" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
