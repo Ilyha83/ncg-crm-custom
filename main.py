@@ -47,13 +47,18 @@ def create_access_token(data: dict):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 db = next(get_db())
-if not db.query(models.User).filter_by(username="admin").first():
+existing_admin = db.query(models.User).filter_by(username="admin").first()
+if not existing_admin:
     admin_user = models.User(
         username="admin",
         hashed_password=hash_password("admin_secure_password_99"),
         role="CEO"
     )
     db.add(admin_user)
+    db.commit()
+elif existing_admin.role != "CEO":
+    # Миграция: исправляем роль если была создана некорректно
+    existing_admin.role = "CEO"
     db.commit()
 
 @app.post("/token")
