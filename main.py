@@ -10,8 +10,10 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from .database import engine, get_db, Base
-from . import models
+# Исправленные импорты без точек для запуска uvicorn на серверах
+import database
+import models
+from database import engine, get_db, Base
 
 # Создаем таблицы при запуске
 Base.metadata.create_all(bind=engine)
@@ -175,8 +177,6 @@ def create_opportunity(data: dict, db: Session = Depends(get_db)):
     return new_opp
 
 # --- ЭНДПОИНТЫ ДЕЯТЕЛЬНОСТИ ---
-
-# Emails
 @app.get("/api/emails")
 def get_emails(db: Session = Depends(get_db)):
     return db.query(models.Email).order_by(models.Email.created_at.desc()).all()
@@ -194,7 +194,6 @@ def create_email(data: dict, db: Session = Depends(get_db)):
     db.refresh(new_email)
     return new_email
 
-# Meetings
 @app.get("/api/meetings")
 def get_meetings(db: Session = Depends(get_db)):
     return db.query(models.Meeting).order_by(models.Meeting.created_at.desc()).all()
@@ -213,7 +212,6 @@ def create_meeting(data: dict, db: Session = Depends(get_db)):
     db.refresh(new_meeting)
     return new_meeting
 
-# Calls
 @app.get("/api/calls")
 def get_calls(db: Session = Depends(get_db)):
     return db.query(models.Call).order_by(models.Call.created_at.desc()).all()
@@ -232,7 +230,6 @@ def create_call(data: dict, db: Session = Depends(get_db)):
     db.refresh(new_call)
     return new_call
 
-# Tasks
 @app.get("/api/tasks")
 def get_tasks(db: Session = Depends(get_db)):
     return db.query(models.Task).order_by(models.Task.created_at.desc()).all()
