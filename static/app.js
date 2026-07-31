@@ -1,8 +1,11 @@
 const API_URL = "";
 
+const THEMES = ["theme-dark", "theme-light", "theme-midnight", "theme-emerald", "theme-rose"];
+
 let token = localStorage.getItem("token") || "";
 let currentUserRole = localStorage.getItem("user_role") || "manager";
 let currentLang = localStorage.getItem("crm_lang") || "ru";
+let currentTheme = localStorage.getItem("crm_theme") || "theme-dark";
 let currentSection = "dashboard";
 let uploadedImages = [];
 
@@ -240,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
     checkAuth();
     setupRouting();
     setupForms();
-    setupThemeToggle();
+    setupThemeDots();
     setupLanguageSelector();
 });
 
@@ -276,34 +279,29 @@ function applyLanguage(lang) {
     });
 }
 
-function setupThemeToggle() {
-    const btn = document.getElementById("btn-theme-toggle");
-    const body = document.body;
+function setupThemeDots() {
+    // Apply saved theme on load
+    applyTheme(currentTheme);
 
-    const savedTheme = localStorage.getItem("theme") || "theme-dark";
-    body.className = savedTheme;
-    updateThemeIcon(savedTheme);
-
-    btn.addEventListener("click", () => {
-        if (body.classList.contains("theme-dark")) {
-            body.className = "theme-light";
-            localStorage.setItem("theme", "theme-light");
-            updateThemeIcon("theme-light");
-        } else {
-            body.className = "theme-dark";
-            localStorage.setItem("theme", "theme-dark");
-            updateThemeIcon("theme-dark");
-        }
+    // Wire up each dot
+    document.querySelectorAll(".theme-dot").forEach(dot => {
+        dot.addEventListener("click", () => {
+            const theme = dot.getAttribute("data-theme");
+            currentTheme = theme;
+            localStorage.setItem("crm_theme", theme);
+            applyTheme(theme);
+        });
     });
 }
 
-function updateThemeIcon(theme) {
-    const icon = document.querySelector("#btn-theme-toggle i");
-    if (theme === "theme-light") {
-        icon.className = "fas fa-moon";
-    } else {
-        icon.className = "fas fa-sun";
-    }
+function applyTheme(theme) {
+    // Remove all theme classes, apply new one
+    document.body.className = theme;
+
+    // Update active dot
+    document.querySelectorAll(".theme-dot").forEach(dot => {
+        dot.classList.toggle("active", dot.getAttribute("data-theme") === theme);
+    });
 }
 
 function checkAuth() {

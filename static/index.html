@@ -88,13 +88,20 @@
                     <span id="user-role-badge" class="role-badge">CEO</span>
                 </div>
                 <div class="footer-buttons">
-                    <!-- Селектор языка в футере -->
+                    <!-- Селектор языка -->
                     <select id="lang-selector" class="lang-select-dropdown" title="Выберите язык / Select language">
                         <option value="ru">🇷🇺 RU</option>
                         <option value="en">🇬🇧 EN</option>
                         <option value="tr">🇹🇷 TR</option>
                     </select>
-                    <button id="btn-theme-toggle" class="btn-icon" title="Переключить тему"><i class="fas fa-sun"></i></button>
+                    <!-- 5 тем (цветные точки) -->
+                    <div class="theme-switcher" title="Выберите тему оформления">
+                        <div class="theme-dot active" data-theme="theme-dark"     title="Dark Gold"></div>
+                        <div class="theme-dot"        data-theme="theme-light"    title="Pure Light"></div>
+                        <div class="theme-dot"        data-theme="theme-midnight" title="Midnight Sapphire"></div>
+                        <div class="theme-dot"        data-theme="theme-emerald"  title="Emerald Obsidian"></div>
+                        <div class="theme-dot"        data-theme="theme-rose"     title="Rose Noir"></div>
+                    </div>
                     <button id="btn-logout" class="btn-icon" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
