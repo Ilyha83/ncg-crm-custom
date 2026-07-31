@@ -1,6 +1,6 @@
 const API_URL = "";
 
-const THEMES = ["theme-dark", "theme-light", "theme-midnight", "theme-emerald", "theme-rose"];
+const THEMES = ["theme-dark", "theme-light", "theme-midnight", "theme-sand", "theme-sky"];
 
 let token = localStorage.getItem("token") || "";
 let currentUserRole = localStorage.getItem("user_role") || "manager";
@@ -13,11 +13,78 @@ let galleryImagesList = [];
 let galleryActiveIndex = 0;
 let calendarEvents = [];
 
+// ─── TOAST-УВЕДОМЛЕНИЯ ───────────────────────────────────────────
+function showToast(message, type = "success") {
+    let container = document.getElementById("toast-container");
+    if (!container) {
+        container = document.createElement("div");
+        container.id = "toast-container";
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    const icon = type === "success" ? "✓" : type === "error" ? "✕" : "ℹ";
+    toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
+    container.appendChild(toast);
+    // Анимация появления
+    requestAnimationFrame(() => toast.classList.add("show"));
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 350);
+    }, 3000);
+}
+
+// ─── MODAL HELPERS ────────────────────────────────────────────────
+function openModal(name) {
+    const modal = document.getElementById(`modal-${name}`);
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    // Автофокус на первое текстовое поле
+    setTimeout(() => {
+        const first = modal.querySelector("input[type=text], input[type=number], input[type=datetime-local], input[type=date], textarea");
+        if (first) first.focus();
+    }, 80);
+}
+
+function closeModal(name) {
+    const modal = document.getElementById(`modal-${name}`);
+    if (!modal) return;
+    modal.classList.add("hidden");
+    // Сбрасываем форму
+    const form = modal.querySelector("form");
+    if (form) form.reset();
+}
+
+// Escape закрывает любую открытую модалку
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        document.querySelectorAll(".modal:not(.hidden)").forEach(m => {
+            m.classList.add("hidden");
+            const form = m.querySelector("form");
+            if (form) form.reset();
+        });
+    }
+});
+
+// Клик по тёмному overlay (не по контенту) закрывает модалку
+document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal")) {
+        e.target.classList.add("hidden");
+        const form = e.target.querySelector("form");
+        if (form) form.reset();
+    }
+});
+
+// ─── EMPTY STATE HELPER ───────────────────────────────────────────
+function renderEmptyState(tbody, cols, message = "Нет данных") {
+    tbody.innerHTML = `<tr><td colspan="${cols}" style="text-align:center;padding:40px;color:var(--text-muted);"><i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:12px;opacity:0.3;"></i>${message}</td></tr>`;
+}
+
 // СЛОВАРЬ ПЕРЕВОДОВ ИНТЕРФЕЙСА (RU, EN, TR)
 const TRANSLATIONS = {
     ru: {
         menu_dashboard: "Главная",
-        menu_leads: "Лиды (WhatsApp)",
+        menu_leads: "Лиды",
         menu_opps: "Сделки",
         menu_contacts: "Контакты",
         menu_developers: "Застройщики",
@@ -31,15 +98,15 @@ const TRANSLATIONS = {
         menu_admin: "Администрирование",
         menu_users: "Сотрудники и роли",
         search: "Поиск...",
-        stat_leads: "Новых лидов с квиза",
+        stat_leads: "Новых лидов",
         stat_opps: "Активных сделок",
         stat_estate: "Объектов в базе",
-        recent_leads: "Последние WhatsApp-лиды",
+        recent_leads: "Последние лиды",
         th_name: "Имя",
         th_phone: "Телефон",
         th_quiz: "Результаты квиза",
         th_date: "Дата",
-        title_leads: "Лиды с WhatsApp-викторин",
+        title_leads: "Лиды",
         th_status: "Статус",
         title_opps: "Сделки",
         btn_create_opp: "Создать сделку",
@@ -91,7 +158,7 @@ const TRANSLATIONS = {
     },
     en: {
         menu_dashboard: "Dashboard",
-        menu_leads: "Leads (WhatsApp)",
+        menu_leads: "Leads",
         menu_opps: "Deals",
         menu_contacts: "Contacts",
         menu_developers: "Developers",
@@ -105,15 +172,15 @@ const TRANSLATIONS = {
         menu_admin: "Administration",
         menu_users: "Team & Roles",
         search: "Search...",
-        stat_leads: "New Quiz Leads",
+        stat_leads: "New Leads",
         stat_opps: "Active Deals",
         stat_estate: "Properties in DB",
-        recent_leads: "Recent WhatsApp Leads",
+        recent_leads: "Recent Leads",
         th_name: "Name",
         th_phone: "Phone",
         th_quiz: "Quiz Results",
         th_date: "Date",
-        title_leads: "WhatsApp Quiz Leads",
+        title_leads: "Leads",
         th_status: "Status",
         title_opps: "Deals",
         btn_create_opp: "Create Deal",
@@ -182,12 +249,12 @@ const TRANSLATIONS = {
         stat_leads: "Yeni Müşteriler",
         stat_opps: "Aktif Fırsatlar",
         stat_estate: "Veritabanındaki Mülkler",
-        recent_leads: "Son WhatsApp Müşterileri",
+        recent_leads: "Son Müşteriler",
         th_name: "İsim",
         th_phone: "Telefon",
         th_quiz: "Test Sonuçları",
         th_date: "Tarih",
-        title_leads: "WhatsApp Müşterileri",
+        title_leads: "Müşteri Adayları",
         th_status: "Durum",
         title_opps: "Fırsatlar",
         btn_create_opp: "Fırsat Oluştur",
@@ -613,34 +680,46 @@ async function loadCalendar() {
         ]);
 
         const meetings = await meetingsRes.json();
-        const calls = await callsRes.json();
-        const tasks = await tasksRes.json();
+        const calls    = await callsRes.json();
+        const tasks    = await tasksRes.json();
 
         calendarEvents = [];
         meetings.forEach(m => {
-            calendarEvents.push({ date: m.date_start.split("T")[0], title: `Meeting: ${m.name}`, type: "meeting" });
+            if (m.date_start) calendarEvents.push({ date: m.date_start.split("T")[0], title: m.name || m.title, type: "meeting" });
         });
         calls.forEach(c => {
-            calendarEvents.push({ date: c.date_start.split("T")[0], title: `Call: ${c.name}`, type: "call" });
+            if (c.date_start) calendarEvents.push({ date: c.date_start.split("T")[0], title: c.name || c.title, type: "call" });
         });
         tasks.forEach(t => {
-            calendarEvents.push({ date: t.due_date, title: `Task: ${t.name}`, type: "task" });
+            if (t.due_date) calendarEvents.push({ date: t.due_date, title: t.name || t.title, type: "task" });
         });
 
         renderCalendarGrid();
     } catch(e) {}
 }
 
+// Текущий отображаемый месяц/год (глобальные для навигации)
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth(); // 0-indexed
+
 function renderCalendarGrid() {
     const container = document.getElementById("calendar-days-container");
     container.innerHTML = "";
 
-    const year = 2026;
-    const month = 6;
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today     = new Date();
+    const todayStr  = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
 
+    // Обновляем заголовок месяца
+    const monthNames = ["Январь","Февраль","Март","Апрель","Май","Июнь",
+                        "Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+    const label = document.getElementById("calendar-month-name");
+    if (label) label.textContent = `${monthNames[calMonth]} ${calYear}`;
+
+    const firstDayIndex = new Date(calYear, calMonth, 1).getDay();
+    const offset        = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+    const daysInMonth   = new Date(calYear, calMonth + 1, 0).getDate();
+
+    // Пустые ячейки до начала месяца
     for (let i = 0; i < offset; i++) {
         const cell = document.createElement("div");
         cell.className = "calendar-day-cell empty";
@@ -648,22 +727,56 @@ function renderCalendarGrid() {
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
-        const cell = document.createElement("div");
+        const dateStr = `${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+        const cell    = document.createElement("div");
         cell.className = "calendar-day-cell";
-        
-        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+        // Подсветка сегодняшнего дня
+        if (dateStr === todayStr) {
+            cell.classList.add("today");
+        }
+
         cell.innerHTML = `<div class="calendar-day-num">${day}</div>`;
 
-        const dayEvents = calendarEvents.filter(e => e.date === dateStr);
-        dayEvents.forEach(e => {
+        // Клик по ячейке — открыть форму с предзаполненной датой
+        cell.addEventListener("click", () => openEventModalWithDate(dateStr));
+
+        // Подставляем события этого дня
+        const dayEvents = calendarEvents.filter(ev => ev.date === dateStr);
+        dayEvents.forEach(ev => {
             const evDiv = document.createElement("div");
-            evDiv.className = `calendar-event ${e.type}`;
-            evDiv.textContent = e.title;
+            evDiv.className = `calendar-event ${ev.type}`;
+            evDiv.textContent = ev.title;
+            evDiv.title = ev.title;
+            // Клик по событию не пробрасывает на ячейку
+            evDiv.addEventListener("click", e => e.stopPropagation());
             cell.appendChild(evDiv);
         });
 
         container.appendChild(cell);
     }
+}
+
+function openEventModalWithDate(dateStr) {
+    // Предзаполняем поля даты и открываем модалку
+    const dtLocal  = dateStr + "T09:00"; // по умолчанию 9:00
+    const datetimeInput = document.getElementById("event-datetime");
+    const duedateInput  = document.getElementById("event-duedate");
+    if (datetimeInput) datetimeInput.value = dtLocal;
+    if (duedateInput)  duedateInput.value  = dateStr;
+    openModal("event");
+}
+
+// Навигация по месяцам
+function calPrevMonth() {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    loadCalendar();
+}
+function calNextMonth() {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    loadCalendar();
 }
 
 async function loadDashboardStats() {
@@ -717,23 +830,36 @@ async function loadLeadsList() {
         leads.forEach(lead => {
             const tr = document.createElement("tr");
             const date = new Date(lead.created_at).toLocaleDateString("ru-RU");
-            let quizHTML = "";
+
+            // Парсим quiz_results: если там JSON — показываем ответы, если строка — как заметку
+            let notesHTML = "";
+            let sourceHTML = "";
             try {
                 const quiz = JSON.parse(lead.quiz_results);
-                quizHTML = Object.entries(quiz).map(([q, a]) => `<strong>${q}:</strong> ${a}`).join("<br>");
+                // Если есть специальное поле source — вытаскиваем
+                if (quiz.__source) {
+                    sourceHTML = quiz.__source;
+                    const { __source, ...rest } = quiz;
+                    notesHTML = Object.entries(rest).map(([q, a]) => `<strong>${q}:</strong> ${a}`).join("<br>");
+                } else {
+                    sourceHTML = "<span style='color:var(--text-muted)'>—</span>";
+                    notesHTML = Object.entries(quiz).map(([q, a]) => `<strong>${q}:</strong> ${a}`).join("<br>");
+                }
             } catch(e) {
-                quizHTML = lead.quiz_results;
+                notesHTML = lead.quiz_results || "—";
+                sourceHTML = "<span style='color:var(--text-muted)'>—</span>";
             }
 
             tr.innerHTML = `
-                <td>${lead.name}</td>
+                <td><strong>${lead.name}</strong></td>
                 <td>${lead.phone}</td>
-                <td>${quizHTML}</td>
+                <td>${sourceHTML}</td>
+                <td style="max-width:220px;">${notesHTML}</td>
                 <td>
                     <select class="status-select" onchange="updateLeadStatus(${lead.id}, this.value)">
-                        <option value="New" ${lead.status === "New" ? "selected" : ""}>New</option>
-                        <option value="In Progress" ${lead.status === "In Progress" ? "selected" : ""}>In Progress</option>
-                        <option value="Closed" ${lead.status === "Closed" ? "selected" : ""}>Closed</option>
+                        <option value="New" ${lead.status === "New" ? "selected" : ""}>Новый</option>
+                        <option value="In Progress" ${lead.status === "In Progress" ? "selected" : ""}>В работе</option>
+                        <option value="Closed" ${lead.status === "Closed" ? "selected" : ""}>Закрыт</option>
                     </select>
                 </td>
                 <td>${date}</td>
@@ -878,6 +1004,89 @@ function setupForms() {
                     preview.appendChild(div);
                 }
             } catch(e) {}
+        }
+    });
+
+    // Форма ручного добавления лида
+    document.getElementById("form-lead").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const source = document.getElementById("lead-source").value;
+        const notes  = document.getElementById("lead-notes").value;
+
+        // Источник и заметки упаковываем в quiz_results как JSON
+        const quizData = { __source: source };
+        if (notes) quizData["Заметки"] = notes;
+
+        const payload = {
+            name:         document.getElementById("lead-name").value,
+            phone:        document.getElementById("lead-phone").value,
+            status:       document.getElementById("lead-status").value,
+            quiz_results: JSON.stringify(quizData)
+        };
+
+        const res = await fetch(`${API_URL}/api/leads`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            closeModal("lead");
+            loadLeadsList();
+            showToast("Лид успешно добавлен ✓");
+        } else {
+            showToast("Ошибка при сохранении", "error");
+        }
+    });
+
+    // Быстрое создание события из календаря
+    const eventTypeSelect = document.getElementById("event-type");
+    if (eventTypeSelect) {
+        eventTypeSelect.addEventListener("change", () => {
+            const type = eventTypeSelect.value;
+            document.getElementById("event-datetime-group").style.display  = type !== "task" ? "" : "none";
+            document.getElementById("event-duedate-group").style.display   = type === "task" ? "" : "none";
+            document.getElementById("event-duration-group").style.display  = type !== "task" ? "" : "none";
+        });
+    }
+
+    document.getElementById("form-event").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const type     = document.getElementById("event-type").value;
+        const title    = document.getElementById("event-name").value;
+        const contact  = document.getElementById("event-contact").value || null;
+        const desc     = document.getElementById("event-desc").value;
+
+        let endpoint, payload;
+
+        if (type === "meeting") {
+            const dt  = document.getElementById("event-datetime").value;
+            const dur = document.getElementById("event-duration").value;
+            endpoint = "/api/meetings";
+            payload  = { title, meeting_datetime: dt, duration_min: parseInt(dur) || 60, contact_id: contact, notes: desc };
+        } else if (type === "call") {
+            const dt  = document.getElementById("event-datetime").value;
+            const dur = document.getElementById("event-duration").value;
+            endpoint = "/api/calls";
+            payload  = { title, call_datetime: dt, duration_min: parseInt(dur) || 30, contact_id: contact, notes: desc };
+        } else {
+            const due = document.getElementById("event-duedate").value;
+            endpoint = "/api/tasks";
+            payload  = { title, due_date: due, contact_id: contact, description: desc };
+        }
+
+        const res = await fetch(`${API_URL}${endpoint}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            closeModal("event");
+            loadCalendar();
+            showToast("Событие добавлено в календарь ✓");
+        } else {
+            showToast("Ошибка при сохранении", "error");
         }
     });
 

@@ -43,7 +43,7 @@
                     <i class="fas fa-chart-line"></i> <span data-i18n="menu_dashboard">Главная</span>
                 </a>
                 <a href="#leads" class="menu-item" data-target="leads">
-                    <i class="fas fa-comments"></i> <span data-i18n="menu_leads">Лиды (WhatsApp)</span>
+                    <i class="fas fa-comments"></i> <span data-i18n="menu_leads">Лиды</span>
                 </a>
                 <a href="#opportunities" class="menu-item" data-target="opportunities">
                     <i class="fas fa-briefcase"></i> <span data-i18n="menu_opps">Сделки</span>
@@ -83,24 +83,22 @@
                 </a>
             </nav>
             <div class="sidebar-footer">
-                <div style="display: flex; flex-direction: column;">
+                <div class="sidebar-footer-top">
                     <span id="user-info"><i class="fas fa-user-circle"></i> admin</span>
                     <span id="user-role-badge" class="role-badge">CEO</span>
                 </div>
-                <div class="footer-buttons">
-                    <!-- Селектор языка -->
+                <div class="sidebar-footer-bottom">
                     <select id="lang-selector" class="lang-select-dropdown" title="Выберите язык / Select language">
                         <option value="ru">🇷🇺 RU</option>
                         <option value="en">🇬🇧 EN</option>
                         <option value="tr">🇹🇷 TR</option>
                     </select>
-                    <!-- 5 тем (цветные точки) -->
                     <div class="theme-switcher" title="Выберите тему оформления">
                         <div class="theme-dot active" data-theme="theme-dark"     title="Dark Gold"></div>
                         <div class="theme-dot"        data-theme="theme-light"    title="Pure Light"></div>
                         <div class="theme-dot"        data-theme="theme-midnight" title="Midnight Sapphire"></div>
-                        <div class="theme-dot"        data-theme="theme-emerald"  title="Emerald Obsidian"></div>
-                        <div class="theme-dot"        data-theme="theme-rose"     title="Rose Noir"></div>
+                        <div class="theme-dot"        data-theme="theme-sand"     title="Warm Sand"></div>
+                        <div class="theme-dot"        data-theme="theme-sky"      title="Arctic Sky"></div>
                     </div>
                     <button id="btn-logout" class="btn-icon" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
@@ -157,7 +155,8 @@
 
                 <section id="sec-leads" class="tab-section hidden">
                     <div class="section-actions">
-                        <h2 data-i18n="title_leads">Лиды с WhatsApp-викторин</h2>
+                        <h2 data-i18n="title_leads">Лиды</h2>
+                        <button class="btn btn-gold" onclick="openModal('lead')"><i class="fas fa-plus"></i> <span>Добавить лида</span></button>
                     </div>
                     <div class="table-container card">
                         <table id="table-all-leads">
@@ -165,7 +164,8 @@
                                 <tr>
                                     <th data-i18n="th_name">Имя</th>
                                     <th data-i18n="th_phone">Телефон</th>
-                                    <th data-i18n="th_quiz">Ответы на квиз</th>
+                                    <th>Источник</th>
+                                    <th data-i18n="th_quiz">Заметки / Ответы</th>
                                     <th data-i18n="th_status">Статус</th>
                                     <th data-i18n="th_date">Дата</th>
                                 </tr>
@@ -369,8 +369,11 @@
                 <section id="sec-calendar" class="tab-section hidden">
                     <div class="section-actions">
                         <h2 data-i18n="title_calendar">Календарь событий</h2>
-                        <div class="calendar-header-actions">
-                            <span id="calendar-month-name" class="gold-text" style="font-size: 18px; font-weight: 600;">Июль 2026</span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <button class="btn btn-secondary" onclick="calPrevMonth()" style="padding:8px 14px;"><i class="fas fa-chevron-left"></i></button>
+                            <span id="calendar-month-name" class="gold-text" style="font-size:15px;font-weight:700;min-width:140px;text-align:center;">Июль 2026</span>
+                            <button class="btn btn-secondary" onclick="calNextMonth()" style="padding:8px 14px;"><i class="fas fa-chevron-right"></i></button>
+                            <button class="btn btn-gold" onclick="openModal('event')"><i class="fas fa-plus"></i> Добавить событие</button>
                         </div>
                     </div>
                     <div class="calendar-layout card">
@@ -503,6 +506,100 @@
                 <div class="input-group"><label>Описание</label><textarea id="est-desc" rows="3"></textarea></div>
                 <div class="input-group"><label>Галерея</label><input type="file" id="est-images" multiple accept="image/*" class="file-input"><div id="upload-preview" class="upload-preview-grid"></div></div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('estate')">Отмена</button><button type="submit" class="btn btn-gold">Создать</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модалка быстрого создания события из календаря -->
+    <div id="modal-event" class="modal hidden">
+        <div class="modal-content card">
+            <h3><i class="fas fa-calendar-plus" style="color:var(--accent);margin-right:8px;"></i>Добавить событие в календарь</h3>
+            <form id="form-event">
+                <div class="input-group">
+                    <label>Тип события</label>
+                    <select id="event-type">
+                        <option value="meeting">📅 Встреча</option>
+                        <option value="call">📞 Звонок</option>
+                        <option value="task">✅ Задача</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Название</label>
+                    <input type="text" id="event-name" required placeholder="Тема встречи, звонка или задачи">
+                </div>
+                <div class="input-group" id="event-datetime-group">
+                    <label>Дата и время</label>
+                    <input type="datetime-local" id="event-datetime">
+                </div>
+                <div class="input-group" id="event-duedate-group" style="display:none;">
+                    <label>Срок выполнения</label>
+                    <input type="date" id="event-duedate">
+                </div>
+                <div class="input-group" id="event-duration-group">
+                    <label>Длительность (мин)</label>
+                    <input type="number" id="event-duration" value="60" min="5">
+                </div>
+                <div class="input-group">
+                    <label>Связать с контактом (необязательно)</label>
+                    <select id="event-contact">
+                        <option value="">— не выбран —</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Описание / заметки</label>
+                    <textarea id="event-desc" rows="2" placeholder="Дополнительная информация..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('event')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модалка создания лида вручную -->
+    <div id="modal-lead" class="modal hidden">
+        <div class="modal-content card">
+            <h3>Добавить лида</h3>
+            <form id="form-lead">
+                <div class="input-group">
+                    <label>Имя</label>
+                    <input type="text" id="lead-name" required placeholder="Имя клиента">
+                </div>
+                <div class="input-group">
+                    <label>Телефон / WhatsApp</label>
+                    <input type="text" id="lead-phone" placeholder="+90 555 000 00 00">
+                </div>
+                <div class="input-group">
+                    <label>Источник лида</label>
+                    <select id="lead-source">
+                        <option value="Прямой звонок">📞 Прямой звонок</option>
+                        <option value="WhatsApp">💬 WhatsApp</option>
+                        <option value="Instagram">📸 Instagram</option>
+                        <option value="Facebook">📘 Facebook</option>
+                        <option value="Сайт">🌐 Сайт</option>
+                        <option value="Реклама">📣 Реклама</option>
+                        <option value="Рекомендация">🤝 Рекомендация</option>
+                        <option value="Выставка">🏛️ Выставка / Мероприятие</option>
+                        <option value="Другое">📋 Другое</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Статус</label>
+                    <select id="lead-status">
+                        <option value="New">Новый</option>
+                        <option value="In Progress">В работе</option>
+                        <option value="Closed">Закрыт</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Заметки</label>
+                    <textarea id="lead-notes" rows="3" placeholder="Интересы, бюджет, пожелания..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('lead')">Отмена</button>
+                    <button type="submit" class="btn btn-gold">Добавить</button>
+                </div>
             </form>
         </div>
     </div>
